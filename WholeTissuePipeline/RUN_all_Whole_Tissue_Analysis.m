@@ -3,7 +3,7 @@ clear all
 %Please change all these inputs 
 infolderloc = 'D:\Myeloma_HSF1_2018-07-27\RawData';
 outfolderloc = 'D:\Myeloma_HSF1_2018-07-27\Test\';
-basicfolderloc = 'D:\Myeloma_HSF1_2018-07-27\Analysis\AnalysisWBaSiCcorrection\BasicCorrectionImages\Myeloma_BS16_14824\Cycle_';
+basicfolderloc = 'D:\Myeloma_HSF1_2018-07-27\Analysis\AnalysisWBaSiCcorrection\BasicCorrectionImages\Myeloma_14824\Cycle_';
 folders = {'Myeloma_BS16_49921_P1'};
 maxfield = [16];
 rowstiles = 4;
