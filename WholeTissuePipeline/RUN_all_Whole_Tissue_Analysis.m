@@ -1,3 +1,41 @@
+clear all
+% This Code is supposed to run all the steps of the t-CycIF Analysis
+% Pipeline in MatLab
+
+% In order to begin the analysis a set of parameters are needed to be
+% defined by the user 
+% 1) where the files are located and how the names are formatted
+% 2) parameters to choose the type of segmentation and details like size of
+% cells
+
+%%% FILE LOCATION AND FORMATTING
+%
+% The code will run on the raw .tiff files as most platforms will export or
+% allow to out the .tiff files
+% The expected file structure is that a master folder will contain all of
+% the raw image files from the cycles with each slide having a separate 
+% subfolder, followed by cycle having a separate subfolder with all the
+% .tiff files in it
+%
+% eg. AllTheRawData\SlideXX\CycleXX\Field_1_Channel_1.tif
+
+% 1) THE MASTER RAW DATA FOLDER
+
+master_folderIN = 'D:\Myeloma_HSF1_2018-07-27\RawData';
+
+% 2) THE RAW DATA SUBFOLDERS FOR EACH SLIDES AND HOW MANY TILES THEY HAVE
+
+slides_folders = {'Slide_1','Slide_2','Slide_3'};   % names of the folders for each slides
+slides_rowtils = [4, 5, 11];                        % number of rows in each slide
+slides_coltils = [4, 4,  2];                        % number of cols in each slide
+slides_maxflds = slides_rowtils.*slides_coltils;    % number of fields imaged
+
+% 3) THE RAW DATA SUBFOLDER FOR EACH CYCLE WITHIN EACH SLIDE
+
+cycles_folders = {'Cycle_1','Cycle_2','Cycle_3','Cycle_4'};
+
+
+
 %Runs the whole tissue analysis 
 clear all
 %Please change all these inputs 
