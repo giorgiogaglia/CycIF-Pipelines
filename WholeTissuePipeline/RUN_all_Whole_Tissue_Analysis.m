@@ -34,74 +34,92 @@ slides_maxflds = slides_rowtils.*slides_coltils;    % number of fields imaged
 
 cycles_folders = {'Cycle_1','Cycle_2','Cycle_3','Cycle_4'};
 
+% 4) THE DATA FOLDER FOR BASIC CORRECTION IMAGES
+%Use imagej_basic_ashlar.py to create Basic Correction Images
+basic_folderloc = 'D:\Myeloma_HSF1_2018-07-27\Analysis\AnalysisWBaSiCcorrection\BasicCorrectionImages\Myeloma_14824\Cycle_';
 
+% 5) MONTAGES FOR ROI 
+montfolder = 'X:\Carmen\Myeloma_Montages\ROIs_Montages\';   % base folder for montages
+montfols = {'ROI_1', 'ROI_2', 'ROI_3'};                     % names of the ROI for each montage 
+%All montages should have the same scale factor
+scale_factor = 0.5;
 
-%Runs the whole tissue analysis 
-clear all
-%Please change all these inputs 
-infolderloc = 'D:\Myeloma_HSF1_2018-07-27\RawData';
-outfolderloc = 'D:\Myeloma_HSF1_2018-07-27\Test\';
-basicfolderloc = 'D:\Myeloma_HSF1_2018-07-27\Analysis\AnalysisWBaSiCcorrection\BasicCorrectionImages\Myeloma_14824\Cycle_';
-folders = {'Myeloma_BS16_49921_P1'};
-maxfield = [16];
-rowstiles = 4;
-colstiles = 4;
-cycles = [2 3 4 5];
-maxcycle = 4; 
-HSF1cycle = 1; %Cycle is from 1... 
-znum = 4; %number of zstacks 
-DAPIslice = [1, 6, 10, 14];
-cellsize = 23.5; 
+% 6) USER INPUT PARAMTERS
+cycles = [2 3 4 5]; %Cycle number is based on number in cycles_folders 
 dates = '\2018-07-27_'; 
-thr = 2; %Foci threshold 
-montfols = {'n/a'};
-montfolder ='X:\Carmen\Myeloma_Montages\ROIs_Montages\';
-marker_name = {'not used', 'HSF1','Hsp70','Hsp70_2','Hsp90','Hsp90_2','CD138','CytoC'}; %HSF1 should always be 1st marker  
-antibody_rounds = [3, 6, 14, 7, 15,10, 8]; %Numbering is 1=DAPI cycle 1; 2= 488 cycle 1; 3=555 cycle 1; 4=647 cycle 1 
-marker_cycle = [1 1 2 3 2 3 3 2];
-HSF1round = 3; %Numbering is 1=DAPI cycle 1; 2= 488 cycle 1; 3=555 cycle 1; 4=647 cycle 1 
-canceround = 10; %Cancer marker 
+marker_name = {'HSF1','Hsp70','Hsp90','CD138','CytoC'}; %List of markers
+antibody_type = {'N', 'C', 'C','C'}; %Type of marker for each antibody; N= Nucleus; C= Cytoplasm 
+antibody_rounds = [3, 6, 14, 7, 15]; %Numbering is 1=DAPI cycle 1; 2= 488 cycle 1; 3=555 cycle 1; 4=647 cycle 1 
+marker_cycle = [1 1 2 3 4]; %Cycle the antibody is in 1 being the first cycle in cycles variable 
+canceround = 10; %Used to filter the data based on the cancer marker
 
-%Don't need to change 
+% THRESHOLD VALUES
+cellsize = 23.5;     %Threshold for cell segmentation 
+sol_thresh = 0.9;    %Threshold to filter data based on cancer marker 
+
+
+% 7) IF THERE ARE Z-STACKS
+z_cycle1 = 0;                    % Number of cycle the z-stack is in, default is 0 for no z-stacks
+z_wave = 'wv Green - dsRed';  % Wavelength of the z-stack, possible wavelengths: {'wv Blue - FITC','wv Green - dsRed','wv Red - Cy5'}
+z_num = 0;                      % Number of z-stacks 
+
+% 8) IF YOU NEED FOCI SEGMENTATION 
+HSF1cycle = 1; %Cycle is from 1... 
+HSF1round = 3; %Numbering is 1=DAPI cycle 1; 2= 488 cycle 1; 3=555 cycle 1; 4=647 cycle 1 
+thr = 2; %Foci threshold 
+
+%% Running analysis 
+[base_folder,filename, ext] = fileparts(master_folderIN); 
+basefolder = [base_folder '\Analysis\']; 
+basicfolderloc = [basic_folderloc '\Cycle_'];
+maxcycle = length(cycles); 
 tilesize = [2048 2048];
 prefix1 = {'A - 1(fld '};
 wavelengths = {'wv Blue - FITC','wv Green - dsRed','wv Red - Cy5'};
-basefolder = outfolderloc;
-
-%% Running analysis 
-x= input('Are there Z-stacks? ''Y''/''N'' ');
-antibody_type = [];
-for i1=1:length(antibody_rounds)
-            str= sprintf('Is %s a cytoplasm or nucleus marker? (''C''/''N'')', marker_name{i1+1}); 
-            str = input(str); 
-            antibody_type = [antibody_type, str];
-end 
-if isequal(x, 'Y')
-    [indx,tf] = listdlg('ListString',wavelengths, 'PromptString', 'Which wavelength is the Z-stacks in?: ', 'SelectionMode', 'single');
-    indx1 = input('Which cycle is it in? (1 being the first cycle of cycles): ');
-    disp('Run 1: Making Stacks')
-    RUN_1_makecorestacks_z(infolderloc, outfolderloc,basicfolderloc, folders, maxfield, cycles, tilesize, prefix1, wavelengths, indx, indx1) 
-    disp('Run 2: Segmenting Cells')
-    RUN_2_segmentstacks(basefolder, folders, maxfield, prefix1,DAPIslice, cellsize) 
-    disp('Run 3: Foci Segmentation & making Measurements') 
-    RUN_3_CycIF_measurements_Z(basefolder,folders, maxfield, maxcycle, dates, DAPIslice, HSF1cycle, znum, thr)   
-    disp('Removing ROIs')
-    remove_ROI(folders, rowstiles, colstiles, maxfield,montfolder, montfols) %Montages should have same name as folders
-    disp('Run 4: Creating Graphs') 
-    RUN_4_CellStateCompare_Path(basefolder, folders, dates,marker_name, antibody_rounds, marker_cycle, HSF1round, canceround, antibody_type) 
-else 
-    disp('Run 1: Making Stacks')
-    RUN_1_makecorestacks(infolderloc, outfolderloc,basicfolderloc, folders, maxfield, cycles, tilesize, prefix1, wavelengths) 
-    disp('Run 2: Segmenting Cells')
-    RUN_2_segmentstacks(basefolder, folders, maxfield, prefix1,DAPIslice, cellsize) 
-    disp('Run 3: Foci Segmentation & making Measurements') 
-    RUN_3_CycIF_measurements(basefolder,folders, maxfield, maxcycle, dates, DAPIslice)
-    disp('Removing ROIs')
-    remove_ROI(folders, rowstiles, colstiles, maxfield,montfolder, montfols) %Montages should have same name as folders
-    disp('Run 4: Creating Graphs') 
-    RUN_4_CellStateCompare_Path(basefolder, folders, dates,marker_name, antibody_rounds, marker_cycle, HSF1round, canceround, antibody_type) 
+DAPIslice = []; 
+CYCLEslice = {};
+x=0; 
+for i2 = 1:maxcycle
+    if i2 == 1
+        x = 1;
+    elseif cycles(i2-1) == z_cycle1
+        x = y + 3 + z_num; %3 is for the other 2 channels
+    else
+        x = y + 4; 
+    end
+    DAPIslice = [DAPIslice, x]; 
+    y = x; %Previous DAPI slice 
+    channels = {}; 
+    if cycles(i2) == z_cycle1
+        channels{1} = 'wv UV - DAPI'; 
+        for i3 = 1:3
+            if isequal(wavelengths{i3}, z_wave) 
+                for i4 = 1:z_num 
+                    channels = [channels, z_wave];
+                end
+            else 
+                channels = [channels, wavelengths{i3}];
+            end 
+        end     
+    else 
+        channels = {'wv UV - DAPI', 'wv Blue - FITC','wv Green - dsRed','wv Red - Cy5'};
+    end 
+    CYCLEslice{i2} = channels; 
 end 
 
+if z_cycle1 ~= 0
+    z_vec = 1:z_num; 
+end
+z_cycle = find(cycles == z_cycle1); 
 
-
+disp('Run 1: Making Stacks')
+RUN_1_makecorestacks(master_folderIN, outfolderloc,basicfolderloc, slides_folders, slides_maxflds, cycles, tilesize, prefix1, wavelengths, z_wave, z_cycle)
+disp('Run 2: Segmenting Cells')
+RUN_2_segmentstacks(basefolder, slides_folders, slides_maxflds, prefix1,DAPIslice, cellsize)
+disp('Run 3: Foci Segmentation & making Measurements')
+RUN_3_CycIF_measurements(basefolder,folders, maxfield, maxcycle, dates, DAPIslice, z_cycle, znum, thr, CYCLEslice)
+disp('Removing ROIs')
+remove_ROI(slides_folders, slides_rowtils, slides_coltils, slides_maxflds,montfolder, montfols) %Montages should have same name as slides_folders
+disp('Run 4: Creating Graphs')
+RUN_4_CellStateCompare_Path(basefolder, slides_folders, dates,marker_name, antibody_rounds, marker_cycle, HSF1round, canceround, antibody_type)
 
