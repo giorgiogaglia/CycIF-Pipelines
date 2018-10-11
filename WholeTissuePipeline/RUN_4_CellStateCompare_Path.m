@@ -1,4 +1,4 @@
-function RUN_4_CellStateCompare_Path(basefolder, folders, dates,marker_name, antibody_rounds, marker_cycle, HSF1round, canceround, antibody_type) 
+function RUN_4_CellStateCompare_Path(basefolder, folders, dates,marker_name, antibody_rounds, marker_cycle, HSF1round, canceround, antibody_type, max_rows, well_nums, sol_thresh) 
 %This program chooses the fields with good staining then plots the
 %frequency of HSF1 foci per core using the good fields 
 % PLOT THE FREQUENCY OF HSF1 FOCI PER CORE
@@ -18,8 +18,9 @@ Solidity = [];
 temp = [];
 temp_sol = [];
 a = [];
-sol_thresh = 0.9;
 
+for i1 = 1:max_rows
+    for i3 = 1:length(well_nums)
 for k = 1:length(Field)
     temp = [];
        try
@@ -28,16 +29,16 @@ for k = 1:length(Field)
            continue
        end 
        if ~ismember(k,bad_fields) %If field is not a bad field
-        if length(index)==length(Field(k).HSF1Foci_Sign) && length(index)>0 && length(Field(k).MedianNucSign)==length(Field(k).HSF1Foci_Sign) 
+        if length(index)==length(Plate{i1, well_nums(i3)}.Field(k).HSF1Foci_Sign) && length(index)>0 && length(Plate{i1, well_nums(i3)}.Field(k).MedianNucSign)==length(Plate{i1, well_nums(i3)}.Field(k).HSF1Foci_Sign) 
         temp_sol = Field(k).Solidity;
         % foci cells count
-        temp(:,1) = Field(k).HSF1Foci_Sign(:,1)./Field(k).HSF1Foci_Sign(:,2);
-        temp(:,2) = Field(k).MedianNucSign(:,HSF1round);
+        temp(:,1) = Plate{i1, well_nums(i3)}.Field(k).HSF1Foci_Sign(:,1)./Plate{i1, well_nums(i3)}.Field(k).HSF1Foci_Sign(:,2);
+        temp(:,2) = Plate{i1, well_nums(i3)}.Field(k).MedianNucSign(:,HSF1round);
         for i1=1:length(antibody_rounds)
             if isequal(antibody_type(i1), 'C')
-                temp(:,i1+2) = Field(k).MedianCytSign(:,antibody_rounds(i1));
+                temp(:,i1+2) = Plate{i1, well_nums(i3)}.Field(k).MedianCytSign(:,antibody_rounds(i1));
             elseif isequal(antibody_type(i1), 'N')
-                temp(:,i1+2) = Field(k).MedianNucSign(:,antibody_rounds(i1));
+                temp(:,i1+2) = Plate{i1, well_nums(i3)}.Field(k).MedianNucSign(:,antibody_rounds(i1));
             end 
         end 
         Matrix = [Matrix; temp];
@@ -91,17 +92,14 @@ plot(x_plot,MovingMean,'r','LineWidth',3)
 end
 
 end
-
+end 
+end 
 
 %% Plotting All the Data Together 
 
 x_plot= [];
 MovingMean = []; 
-for i1=1:length(antibody_rounds)
-            str= sprintf('Is %s a cytoplasm or nucleaus marker? (''C''/''N'')', marker_name{i1+1}); 
-            str = input(str); 
-            antibody_type = [antibody_type, str];
-end 
+
 for folder = 1:length(folders) 
 openfile = [basefolder folders{folder} dates folders{folder} '_Results_BasicCorrection.mat'];
 load(openfile)
@@ -116,8 +114,8 @@ temp = [];
 temp_sol = [];
 a = [];
 
-sol_thresh = 0.9;
-
+for i1 = 1:max_rows
+    for i3 = 1:length(well_nums)
 for k = 1:length(Field)
     temp = [];
        try
@@ -126,16 +124,16 @@ for k = 1:length(Field)
            continue
        end 
         if ~ismember(k,bad_fields) %If field is not a bad field
-        if length(index)==length(Field(k).HSF1Foci_Sign) && length(index)>0 && length(Field(k).MedianNucSign)==length(Field(k).HSF1Foci_Sign) 
-        temp_sol = Field(k).Solidity;
+        if length(index)==length(Plate{i1, well_nums(i3)}.Field(k).HSF1Foci_Sign) && length(index)>0 && length(Plate{i1, well_nums(i3)}.Field(k).MedianNucSign)==length(Plate{i1, well_nums(i3)}.Field(k).HSF1Foci_Sign) 
+        temp_sol = Plate{i1, well_nums(i3)}.Field(k).Solidity;
         % foci cells count
-        temp(:,1) = Field(k).HSF1Foci_Sign(:,1)./Field(k).HSF1Foci_Sign(:,2);
-        temp(:,2) = Field(k).MedianNucSign(:,HSF1round);
+        temp(:,1) = Plate{i1, well_nums(i3)}.Field(k).HSF1Foci_Sign(:,1)./Plate{i1, well_nums(i3)}.Field(k).HSF1Foci_Sign(:,2);
+        temp(:,2) = Plate{i1, well_nums(i3)}.Field(k).MedianNucSign(:,HSF1round);
         for i1=1:length(antibody_rounds)
             if isequal(antibody_type(i1), 'C')
-                temp(:,i1+2) = Field(k).MedianCytSign(:,antibody_rounds(i1));
+                temp(:,i1+2) = Plate{i1, well_nums(i3)}.Field(k).MedianCytSign(:,antibody_rounds(i1));
             elseif isequal(antibody_type(i1), 'N')
-                temp(:,i1+2) = Field(k).MedianNucSign(:,antibody_rounds(i1));
+                temp(:,i1+2) = Plate{i1, well_nums(i3)}.Field(k).MedianNucSign(:,antibody_rounds(i1));
             end 
         end 
         Matrix = [Matrix; temp];
@@ -145,6 +143,8 @@ for k = 1:length(Field)
         end
        end 
 end
+    end 
+end 
 end 
 Matrix = sortrows(Matrix,1);
 
@@ -194,5 +194,4 @@ savefig(h, 'HSP_All_Plot_path_filt.fig')
 
 clear MovingMean
 end
-
 
