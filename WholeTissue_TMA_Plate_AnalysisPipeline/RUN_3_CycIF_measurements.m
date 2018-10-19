@@ -1,4 +1,4 @@
-function RUN_3_CycIF_measurements(basefolder,folders, maxfield, maxcycle, dates, DAPIslice, z_cycle, znum, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets)
+function RUN_3_CycIF_measurements(basefolder,folders, maxfield, maxcycle, dates, DAPIslice, z_cycle, znum, thr, CYCLEslice, prefix1, max_rows, well_nums, well_lets)
 %% Comment out to prevent rewriting over saved mat files
 
 for folder = 1:length(folders)
@@ -46,17 +46,17 @@ for folder = 1:length(folders)
                 %  that is in complete comment out this portion or else it will write over
                 %  Field
                 field = field + 1;
-                Plate{i1, well_nums(i3)}.Fields(field).Name = prefix2(i2);
-                Plate{i1, well_nums(i3)}.Fields(field).Area = [];
-                Plate{i1, well_nums(i3)}.Field(field).Solidity = [];
-                Plate{i1, well_nums(i3)}.Field(field).CentroidRow = [];
-                Plate{i1, well_nums(i3)}.Field(field).CentroidCol = [];
-                Plate{i1, well_nums(i3)}.Field(field).MedianNucSign = [];
-                Plate{i1, well_nums(i3)}.Field(field).MedianCytSign = [];
-                Plate{i1, well_nums(i3)}.Field(field).MeanNucSign = [];
-                Plate{i1, well_nums(i3)}.Field(field).MeanCytSign = [];
-                Plate{i1, well_nums(i3)}.Field(field).HSF1Foci_Area = [];
-                Plate{i1, well_nums(i3)}.Field(field).HSF1Foci_Sign = [];
+                Plate{rows(i1), well_nums(i3)}.Fields(field).Name = prefix2(i2);
+                Plate{rows(i1), well_nums(i3)}.Fields(field).Area = [];
+                Plate{rows(i1), well_nums(i3)}.Field(field).Solidity = [];
+                Plate{rows(i1), well_nums(i3)}.Field(field).CentroidRow = [];
+                Plate{rows(i1), well_nums(i3)}.Field(field).CentroidCol = [];
+                Plate{rows(i1), well_nums(i3)}.Field(field).MedianNucSign = [];
+                Plate{rows(i1), well_nums(i3)}.Field(field).MedianCytSign = [];
+                Plate{rows(i1), well_nums(i3)}.Field(field).MeanNucSign = [];
+                Plate{rows(i1), well_nums(i3)}.Field(field).MeanCytSign = [];
+                Plate{rows(i1), well_nums(i3)}.Field(field).HSF1Foci_Area = [];
+                Plate{rows(i1), well_nums(i3)}.Field(field).HSF1Foci_Sign = [];
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 try
@@ -146,15 +146,15 @@ for folder = 1:length(folders)
                     
                     if cycle == 1 %initializing size of struct
                         totcells = length(stats_NucImage);
-                        Plate{i1, well_nums(i3)}.Field(field).Name = prefix2(i2);
-                        Plate{i1, well_nums(i3)}.Field(field).Area = zeros(totcells,maxcycle)+NaN;
-                        Plate{i1, well_nums(i3)}.Field(field).Solidity = zeros(totcells,maxcycle)+NaN;
-                        Plate{i1, well_nums(i3)}.Field(field).CentroidRow = zeros(totcells,maxcycle)+NaN;
-                        Plate{i1, well_nums(i3)}.Field(field).CentroidCol = zeros(totcells,maxcycle)+NaN;
-                        Plate{i1, well_nums(i3)}.Field(field).MedianNucSign = zeros(totcells,maxcycle*4)+NaN;
-                        Plate{i1, well_nums(i3)}.Field(field).MedianCytSign = zeros(totcells,maxcycle*4)+NaN;
-                        Plate{i1, well_nums(i3)}.Field(field).MeanNucSign = zeros(totcells,maxcycle*4)+NaN;
-                        Plate{i1, well_nums(i3)}.Field(field).MeanCytSign = zeros(totcells,maxcycle*4)+NaN;
+                        Plate{rows(i1), well_nums(i3)}.Field(field).Name = prefix2(i2);
+                        Plate{rows(i1), well_nums(i3)}.Field(field).Area = zeros(totcells,maxcycle)+NaN;
+                        Plate{rows(i1), well_nums(i3)}.Field(field).Solidity = zeros(totcells,maxcycle)+NaN;
+                        Plate{rows(i1), well_nums(i3)}.Field(field).CentroidRow = zeros(totcells,maxcycle)+NaN;
+                        Plate{rows(i1), well_nums(i3)}.Field(field).CentroidCol = zeros(totcells,maxcycle)+NaN;
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianNucSign = zeros(totcells,maxcycle*4)+NaN;
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianCytSign = zeros(totcells,maxcycle*4)+NaN;
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanNucSign = zeros(totcells,maxcycle*4)+NaN;
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanCytSign = zeros(totcells,maxcycle*4)+NaN;
                     end
                     
                     Area = {stats_NucImage.Area};
@@ -165,15 +165,15 @@ for folder = 1:length(folders)
                     
                     totcyclecells = length(Area);
                     
-                    Plate{i1, well_nums(i3)}.Field(field).Area(1:totcyclecells,cycle) = cell2mat(Area);
-                    Plate{i1, well_nums(i3)}.Field(field).Solidity(1:totcyclecells,cycle) = cell2mat(Solidity);
-                    Plate{i1, well_nums(i3)}.Field(field).CentroidRow(1:totcyclecells,cycle) = CentroidMat(1,:);
-                    Plate{i1, well_nums(i3)}.Field(field).CentroidCol(1:totcyclecells,cycle) = CentroidMat(2,:);
+                    Plate{rows(i1), well_nums(i3)}.Field(field).Area(1:totcyclecells,cycle) = cell2mat(Area);
+                    Plate{rows(i1), well_nums(i3)}.Field(field).Solidity(1:totcyclecells,cycle) = cell2mat(Solidity);
+                    Plate{rows(i1), well_nums(i3)}.Field(field).CentroidRow(1:totcyclecells,cycle) = CentroidMat(1,:);
+                    Plate{rows(i1), well_nums(i3)}.Field(field).CentroidCol(1:totcyclecells,cycle) = CentroidMat(2,:);
                     
-                    Plate{i1, well_nums(i3)}.Field(field).Area(isnan(Field(field).Area))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).Solidity(isnan(Field(field).Solidity))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).CentroidRow(isnan(Field(field).CentroidRow))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).CentroidCol(isnan(Field(field).CentroidCol))=0;
+                    Plate{rows(i1), well_nums(i3)}.Field(field).Area(isnan(Field(field).Area))=0;
+                    Plate{rows(i1), well_nums(i3)}.Field(field).Solidity(isnan(Field(field).Solidity))=0;
+                    Plate{rows(i1), well_nums(i3)}.Field(field).CentroidRow(isnan(Field(field).CentroidRow))=0;
+                    Plate{rows(i1), well_nums(i3)}.Field(field).CentroidCol(isnan(Field(field).CentroidCol))=0;
                     
                     Nuclei_DAPI_stats = regionprops(lb_Nuc_Image,DAPI_BK,'PixelValues');
                     
@@ -189,25 +189,25 @@ for folder = 1:length(folders)
                         Cytopl_A555_stats = regionprops(lb_Cyt_Image,MP_Zstack,'PixelValues');
                         Cytopl_A647_stats = regionprops(lb_Cyt_Image,Image_BK{3},'PixelValues');
                         
-                        Plate{i1, well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@median,{Nuclei_DAPI_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@median,{Nuclei_A488_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@median,{Nuclei_A555_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@median,{Nuclei_A647_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@median,{Nuclei_DAPI_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@median,{Nuclei_A488_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@median,{Nuclei_A555_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@median,{Nuclei_A647_stats.PixelValues});
                         
-                        Plate{i1, well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@median,{Cytopl_DAPI_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@median,{Cytopl_A488_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@median,{Cytopl_A555_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@median,{Cytopl_A647_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@median,{Cytopl_DAPI_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@median,{Cytopl_A488_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@median,{Cytopl_A555_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@median,{Cytopl_A647_stats.PixelValues});
                         
-                        Plate{i1, well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@mean,{Nuclei_DAPI_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@mean,{Nuclei_A488_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@mean,{Nuclei_A555_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@mean,{Nuclei_A647_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@mean,{Nuclei_DAPI_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@mean,{Nuclei_A488_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@mean,{Nuclei_A555_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@mean,{Nuclei_A647_stats.PixelValues});
                         
-                        Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@mean,{Cytopl_DAPI_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@mean,{Cytopl_A488_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@mean,{Cytopl_A555_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@mean,{Cytopl_A647_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@mean,{Cytopl_DAPI_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@mean,{Cytopl_A488_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@mean,{Cytopl_A555_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@mean,{Cytopl_A647_stats.PixelValues});
                     else
                         
                         Nuclei_A488_stats = regionprops(lb_Nuc_Image,Image_BK{1},'PixelValues');
@@ -218,32 +218,32 @@ for folder = 1:length(folders)
                         Cytopl_A555_stats = regionprops(lb_Cyt_Image,Image_BK{2},'PixelValues');
                         Cytopl_A647_stats = regionprops(lb_Cyt_Image,Image_BK{3},'PixelValues');
                         
-                        Plate{i1, well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@median,{Nuclei_DAPI_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@median,{Nuclei_A488_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@median,{Nuclei_A555_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@median,{Nuclei_A647_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@median,{Nuclei_DAPI_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@median,{Nuclei_A488_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@median,{Nuclei_A555_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianNucSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@median,{Nuclei_A647_stats.PixelValues});
                         
-                        Plate{i1, well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@median,{Cytopl_DAPI_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@median,{Cytopl_A488_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@median,{Cytopl_A555_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@median,{Cytopl_A647_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@median,{Cytopl_DAPI_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@median,{Cytopl_A488_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@median,{Cytopl_A555_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MedianCytSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@median,{Cytopl_A647_stats.PixelValues});
                         
-                        Plate{i1, well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@mean,{Nuclei_DAPI_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@mean,{Nuclei_A488_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@mean,{Nuclei_A555_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@mean,{Nuclei_A647_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@mean,{Nuclei_DAPI_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@mean,{Nuclei_A488_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@mean,{Nuclei_A555_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanNucSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@mean,{Nuclei_A647_stats.PixelValues});
                         
-                        Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@mean,{Cytopl_DAPI_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@mean,{Cytopl_A488_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@mean,{Cytopl_A555_stats.PixelValues});
-                        Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@mean,{Cytopl_A647_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+1) = cellfun(@mean,{Cytopl_DAPI_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+2) = cellfun(@mean,{Cytopl_A488_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+3) = cellfun(@mean,{Cytopl_A555_stats.PixelValues});
+                        Plate{rows(i1), well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@mean,{Cytopl_A647_stats.PixelValues});
                     end
                     
-                    Plate{i1, well_nums(i3)}.Field(field).MedianNucSign(isnan(Field(field).MedianNucSign))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).MedianCytSign(isnan(Field(field).MedianCytSign))=0;
+                    Plate{rows(i1), well_nums(i3)}.Field(field).MedianNucSign(isnan(Field(field).MedianNucSign))=0;
+                    Plate{rows(i1), well_nums(i3)}.Field(field).MedianCytSign(isnan(Field(field).MedianCytSign))=0;
                     
-                    Plate{i1, well_nums(i3)}.Field(field).MeanNucSign(isnan(Field(field).MeanNucSign))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(isnan(Field(field).MeanCytSign))=0;
+                    Plate{rows(i1), well_nums(i3)}.Field(field).MeanNucSign(isnan(Field(field).MeanNucSign))=0;
+                    Plate{rows(i1), well_nums(i3)}.Field(field).MeanCytSign(isnan(Field(field).MeanCytSign))=0;
                     
                     if cycle == z_cycle
                         % only use HSF1cycle to segment the foci
@@ -309,13 +309,13 @@ for folder = 1:length(folders)
                             Foci_stats = regionprops(lb_FociImage,MP_Zstack,'PixelValues'); %uses maximum intensity projection of all images
                             Foci_tot_stats = regionprops(Dilate_Nuc_Image,MP_Zstack,'PixelValues');
                             
-                            Plate{i1, well_nums(i3)}.Field(field).HSF1Foci_Area(1:max(lb_FociImage(:)),1) = cellfun(@length,{Foci_stats.PixelValues});
-                            Plate{i1, well_nums(i3)}.Field(field).HSF1Foci_Area(1:max(Dilate_Nuc_Image(:)),2) = cellfun(@length,{Foci_tot_stats.PixelValues});
-                            Plate{i1, well_nums(i3)}.Field(field).HSF1Foci_Sign(1:max(lb_FociImage(:)),1) = cellfun(@sum,{Foci_stats.PixelValues});
-                            Plate{i1, well_nums(i3)}.Field(field).HSF1Foci_Sign(1:max(Dilate_Nuc_Image(:)),2) = cellfun(@sum,{Foci_tot_stats.PixelValues});
+                            Plate{rows(i1), well_nums(i3)}.Field(field).HSF1Foci_Area(1:max(lb_FociImage(:)),1) = cellfun(@length,{Foci_stats.PixelValues});
+                            Plate{rows(i1), well_nums(i3)}.Field(field).HSF1Foci_Area(1:max(Dilate_Nuc_Image(:)),2) = cellfun(@length,{Foci_tot_stats.PixelValues});
+                            Plate{rows(i1), well_nums(i3)}.Field(field).HSF1Foci_Sign(1:max(lb_FociImage(:)),1) = cellfun(@sum,{Foci_stats.PixelValues});
+                            Plate{rows(i1), well_nums(i3)}.Field(field).HSF1Foci_Sign(1:max(Dilate_Nuc_Image(:)),2) = cellfun(@sum,{Foci_tot_stats.PixelValues});
                             
-                            Plate{i1, well_nums(i3)}.Field(field).HSF1Foci_Area(isnan(Field(field).HSF1Foci_Area))=0;
-                            Plate{i1, well_nums(i3)}.Field(field).HSF1Foci_Sign(isnan(Field(field).HSF1Foci_Sign))=0;
+                            Plate{rows(i1), well_nums(i3)}.Field(field).HSF1Foci_Area(isnan(Field(field).HSF1Foci_Area))=0;
+                            Plate{rows(i1), well_nums(i3)}.Field(field).HSF1Foci_Sign(isnan(Field(field).HSF1Foci_Sign))=0;
                             
                         end
                     end
