@@ -1,4 +1,4 @@
-clear all
+% clear all
 % This Code is supposed to run all the steps of the t-CycIF Analysis
 % Pipeline in MatLab
 
@@ -25,35 +25,37 @@ master_folderIN = 'D:\Myeloma_HSF1_2018-07-27\RawData';
 
 % 2) SLIDE AND PLATE SPECIFIC PARAMETERS: Comment out the other section
 
-% 2A) SLIDE: THE RAW DATA SUBFOLDERS FOR EACH SLIDES AND HOW MANY TILES THEY HAVE
+% 2A) WHOLE TISSUE SLIDE: THE RAW DATA SUBFOLDERS FOR EACH SLIDES AND HOW MANY TILES THEY HAVE
 
-slides_folders = {'Slide_1','Slide_2','Slide_3'};   % names of the folders for each slides
-slides_rowtils = [1:2];                         % number of rows in each slide
-slides_coltils = [2:10];                        % number of cols in each slide
-maxflds = slides_rowtils.*slides_coltils;       % number of fields imaged
+slides_folders = {'Myeloma_BS16_14824'};   % names of the folders for each slides
+slides_rowtils = [1,2];                         % number of rows in each slide
+slides_coltils = [2,10];                        % number of cols in each slide
+maxfields = slides_rowtils.*slides_coltils;       % number of fields imaged
 %DO NOT CHANGE
     prefix1 = {'A - 1(fld '};    % prefix for the name of each file
     max_rows = 1;                       % total number of plate rows; ex. 2 for rows B & C
     well_nums = 1;                   % vector of number for wells; ex. 2 to 10 for columns 2 through 10 
     well_lets = {'A'};
-    DAPIwv = {'wv UV - DAPI'};    
+    DAPIwv = 'wv UV - DAPI';    
     wavelengths = {'wv Blue - FITC','wv Green - dsRed','wv Red - Cy5'};
 
-% 2B) IF YOU HAVE A PLATE
+% 2B) IF YOU HAVE A TMA 
+%CARMEN ADD THIS IN! 
 
-slides_folders = {'Slide_1','Slide_2','Slide_3'};   % names of the folders for each plate 
-maxflds = 9;                        % number of fields imaged 
-prefix1 = {'B - 02(fld ','B - 03(fld ','B - 04(fld ','B - 05(fld ','B - 06(fld ','B - 07(fld ','B - 08(fld ','B - 09(fld ','B - 10(fld '; ...     %Prefix for the name of each file, MUST START A NEW ROW FOR A NEW ROW 
-    'C - 02(fld ','C - 03(fld ','C - 04(fld ','C - 05(fld ','C - 06(fld ','C - 07(fld ','C - 08(fld ','C - 09(fld ','C - 10(fld '};
-max_rows = 2;                       %Total number of plate rows; ex. 2 for rows B & C
-well_nums = 2:10;                   % Vector of number for wells; ex. 2 to 10 for columns 2 through 10 
-well_lets = {'B', 'C'};             % Letters that correspond to the name of the row 
-DAPIwv = {'wv UV - DAPI z 07'};    % Change if suffix is different  
-wavelengths = {'wv Blue - FITC z 07','wv Green - dsRed z 07','wv Red - Cy5 z 07'};
-% DO NOT CHANGE
-    slides_rowtils = 0;                        
-    slides_coltils = 0;     
-
+% % 2B) IF YOU HAVE A PLATE
+% 
+% slides_folders = {'Slide_1','Slide_2','Slide_3'};   % names of the folders for each plate 
+% maxfields = 9;                        % number of fields imaged 
+% prefix1 = {'B - 02(fld ','B - 03(fld ','B - 04(fld ','B - 05(fld ','B - 06(fld ','B - 07(fld ','B - 08(fld ','B - 09(fld ','B - 10(fld '; ...     %Prefix for the name of each file, MUST START A NEW ROW FOR A NEW ROW 
+%     'C - 02(fld ','C - 03(fld ','C - 04(fld ','C - 05(fld ','C - 06(fld ','C - 07(fld ','C - 08(fld ','C - 09(fld ','C - 10(fld '};
+% well_nums = 2:10;                   % Vector of number for wells; ex. 2 to 10 for columns 2 through 10 
+% well_lets = {'B', 'C'};             % Letters that correspond to the name of the row 
+% DAPIwv = 'wv UV - DAPI z 07';    % Change if suffix is different  
+% wavelengths = {'wv Blue - FITC z 07','wv Green - dsRed z 07','wv Red - Cy5 z 07'};
+% % DO NOT CHANGE
+%     slides_rowtils = 0;                        
+%     slides_coltils = 0;     
+%     max_rows = 2=length(well_lets);                       %Total number of plate rows; ex. 2 for rows B & C
 
 % 3) THE RAW DATA SUBFOLDER FOR EACH CYCLE WITHIN EACH SLIDE
 
@@ -84,7 +86,7 @@ cellsize = 23.5;     %Threshold for cell segmentation
 
 
 % 7) IF THERE ARE Z-STACKS
-z_cycle1 = 0;                    % Number of cycle the z-stack is in, default is 0 for no z-stacks
+z_cycle = 0;                    % Number of cycle the z-stack is in, default is 0 for no z-stacks
 z_wave = 'wv Green - dsRed';  % Wavelength of the z-stack, possible wavelengths: {'wv Blue - FITC','wv Green - dsRed','wv Red - Cy5'}
 z_num = 0;                      % Number of z-stacks 
 
@@ -106,7 +108,7 @@ x=0;
 for i2 = 1:maxcycle
     if i2 == 1
         x = 1;
-    elseif cycles(i2-1) == z_cycle1
+    elseif cycles(i2-1) == z_cycle
         x = y + 3 + z_num; %3 is for the other 2 channels
     else
         x = y + 4; 
@@ -114,7 +116,7 @@ for i2 = 1:maxcycle
     DAPIslice = [DAPIslice, x]; 
     y = x; %Previous DAPI slice 
     channels = {}; 
-    if cycles(i2) == z_cycle1
+    if cycles(i2) == z_cycle
         channels{1} = 'wv UV - DAPI'; 
         for i3 = 1:3
             if isequal(wavelengths{i3}, z_wave) 
@@ -131,24 +133,21 @@ for i2 = 1:maxcycle
     CYCLEslice{i2} = channels; 
 end 
 
-if z_cycle1 ~= 0
-    z_vec = 1:z_num; 
-end
-z_cycle = find(cycles == z_cycle1); 
 
+%%
 disp('Run 1: Making Stacks')
-RUN_1_makecorestacks(master_folderIN, outfolderloc,basicfolderloc, slides_folders, slides_maxflds, cycles, tilesize, prefix1, wavelengths, z_wave, z_cycle, max_rows, well_nums , well_lets, DAPIwv)
+RUN_1_makecorestacks(master_folderIN, basefolder,basicfolderloc, slides_folders, maxfields, cycles, tilesize, prefix1, wavelengths, z_wave, z_cycle, max_rows, well_nums , well_lets, DAPIwv)
 disp('Run 2: Segmenting Cells')
-RUN_2_segmentstacks(basefolder, folders, maxfield,DAPIslice, cellsize, max_rows, well_nums, well_lets)
+RUN_2_segmentstacks(basefolder, slides_folders, maxfield,DAPIslice, cellsize, max_rows, well_nums, well_lets)
 disp('Run 3: Foci Segmentation & making Measurements')
-RUN_3_CycIF_measurements(basefolder,folders, maxfield, maxcycle, dates, DAPIslice, z_cycle, znum, thr, CYCLEslice, prefix1, max_rows, well_nums)  
+RUN_3_CycIF_measurements(basefolder,slides_folders, maxfield, maxcycle, dates, DAPIslice, z_cycle, znum, thr, CYCLEslice, prefix1, max_rows, well_nums)  
 if ~isempty(montfols)
     disp('Removing ROIs')
-    remove_ROI(slides_folders, slides_rowtils, slides_coltils, slides_maxflds,montfolder, montfols) 
+    remove_ROI(slides_folders, slides_rowtils, slides_coltils, maxfields,montfolder, montfols) 
 end
 
 % disp('Run 4: Creating Graphs')
-RUN_4_CellStateCompare_Path(basefolder, slides_folders, dates,marker_name, antibody_rounds, marker_cycle, HSF1round, canceround, antibody_type)
+RUN_4_CellStateCompare_Path(basefolder, slides_folders, dates,marker_name, antibody_rounds, marker_cycle, HSF1round, canceround, antibody_type, max_rows, well_nums)
 
 %% OVERVIEW AND EXPLANATION
 
