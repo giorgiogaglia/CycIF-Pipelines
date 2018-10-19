@@ -1,6 +1,5 @@
 function RUN_2_segmentstacks(basefolder, slides_folders, maxfields,DAPIslice, cellsize, max_rows, well_nums, well_lets)
 % open the tiff file of the DAPI images and segment them separately
-filenameout=0;
 sigma = 1;
 writeflag = 0;
 fixbrokencellsflag = 0;
@@ -38,7 +37,7 @@ for folder = 1:length(slides_folders)
                 % run segmentation for cycle 1
                 
                 filename_out = [basefolder slides_folders{folder} filesep 'SegImages\Seg' num2str(prefix2(i2),dim) '.tif'];
-                SegImage1 = CycIF_Segmentation_normfit_opencellsizeover5_medianpercell_v1(DAPIImage,filenameout,options); %Test segmentation first
+                SegImage1 = CycIF_Segmentation_normfit_opencellsizeover5_medianpercell_v2(DAPIImage,filename_out,options); %Test segmentation first
                 Cycle1Stats = regionprops(SegImage1,'centroid','area','solidity','PixelList','PixelIdxList');
                 TrackImage_base = zeros(size(SegImage1));
                 TrackImage = [];
@@ -58,7 +57,7 @@ for folder = 1:length(slides_folders)
                         clear Matrix_N CycleNStats centroid_N
                         DAPIImage=imread(FileTif,'Index',DAPIslice(cycle));
                         if max(DAPIImage(:))>0
-                            SegImageN = CycIF_Segmentation_normfit_opencellsizeover5_medianpercell_v1(DAPIImage,filenameout,options);    %Segementing each cycle
+                            SegImageN = CycIF_Segmentation_normfit_opencellsizeover5_medianpercell_v2(DAPIImage,filename_out,options);    %Segementing each cycle
                         else
                             SegImageN = zeros(size(DAPIImage));
                             disp('This image is empty')
