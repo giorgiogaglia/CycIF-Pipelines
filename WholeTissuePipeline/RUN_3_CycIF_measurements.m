@@ -1,4 +1,4 @@
-function RUN_3_CycIF_measurements(basefolder,slides_folders, maxfields, maxcycle, dates, DAPIslice, z_cycle, znum, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets)
+function RUN_3_CycIF_measurements(basefolder,slides_folders, maxfields, maxcycle, dates, DAPIslice, z_cycle, z_num, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets, cycles)
 %% Comment out to prevent rewriting over saved mat files
 
 for folder = 1:length(slides_folders)
@@ -14,7 +14,7 @@ end
 
 
 %% Measuring CycIF
-trackfile_seg = '\TrackedImages\TrackedField';
+trackfile_seg = '\TrackedImages\';
 
 
 for folder = 1:length(slides_folders)
@@ -112,7 +112,7 @@ for folder = 1:length(slides_folders)
                     Image_Zstack = []; %Stack of each Z-stack
                     
                     if cycles(cycle) == z_cycle
-                        for j4 = 1:znum
+                        for j4 = 1:z_num
                             try
                                 Image_BK{j4} = Image{j4};
                                 Image_Zstack = cat(3,Image_Zstack,Image{j4});
@@ -169,10 +169,10 @@ for folder = 1:length(slides_folders)
                     Plate{i1, well_nums(i3)}.Field(field).CentroidRow(1:totcyclecells,cycle) = CentroidMat(1,:);
                     Plate{i1, well_nums(i3)}.Field(field).CentroidCol(1:totcyclecells,cycle) = CentroidMat(2,:);
                     
-                    Plate{i1, well_nums(i3)}.Field(field).Area(isnan(Field(field).Area))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).Solidity(isnan(Field(field).Solidity))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).CentroidRow(isnan(Field(field).CentroidRow))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).CentroidCol(isnan(Field(field).CentroidCol))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).Area(isnan(Plate{i1, well_nums(i3)}.Field(field).Area))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).Solidity(isnan(Plate{i1, well_nums(i3)}.Field(field).Solidity))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).CentroidRow(isnan(Plate{i1, well_nums(i3)}.Field(field).CentroidRow))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).CentroidCol(isnan(Plate{i1, well_nums(i3)}.Field(field).CentroidCol))=0;
                     
                     Nuclei_DAPI_stats = regionprops(lb_Nuc_Image,DAPI_BK,'PixelValues');
                     
@@ -238,11 +238,11 @@ for folder = 1:length(slides_folders)
                         Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@mean,{Cytopl_A647_stats.PixelValues});
                     end
                     
-                    Plate{i1, well_nums(i3)}.Field(field).MedianNucSign(isnan(Field(field).MedianNucSign))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).MedianCytSign(isnan(Field(field).MedianCytSign))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).MedianNucSign(isnan(Plate{i1, well_nums(i3)}.Field(field).MedianNucSign))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).MedianCytSign(isnan(Plate{i1, well_nums(i3)}.Field(field).MedianCytSign))=0;
                     
-                    Plate{i1, well_nums(i3)}.Field(field).MeanNucSign(isnan(Field(field).MeanNucSign))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(isnan(Field(field).MeanCytSign))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).MeanNucSign(isnan(Plate{i1, well_nums(i3)}.Field(field).MeanNucSign))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(isnan(Plate{i1, well_nums(i3)}.Field(field).MeanCytSign))=0;
                     
                     if cycles(cycle) == z_cycle
                         % only use HSF1cycle to segment the foci
@@ -253,7 +253,7 @@ for folder = 1:length(slides_folders)
                             Dilate_Nuc_Image = lb_Nuc_Image;
                             FociSeg_Cumulative= 0; % = [];
                             FociZstack = []; %Stack of all z-stack images
-                            for foci_im = 1:znum
+                            for foci_im = 1:z_num
                                 % segement HSF1 foci
                                 try
                                     HSF1Foci_BK = Image{foci_im};%-imopen(Image{foci_im}, strel('disk',15));
