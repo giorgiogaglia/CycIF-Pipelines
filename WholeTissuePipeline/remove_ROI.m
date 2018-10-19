@@ -1,23 +1,23 @@
-function remove_ROI(fols, rowstiles, colstiles, maxfield,montfolder, montfols) 
+function remove_ROI(slides_folders, slides_rowtils, slides_coltils, maxfields,montfolder, montslides_folders) 
 %This program find the fields that correspond to ROI's that are incorrectly
 %indentified as cancer by CD138 
 filename_res = 'Incorrect_ROIs.mat';
 save(filename_res)
     
 %% Creating structure of ROIs
-for i2= 1:length(fols) %Looping through each slide
-    if isequal(montfols{i2}, 'n/a')
-        ROI_Fields(i2).Name = fols{i2};
+for i2= 1:length(slides_folders) %Looping through each slide
+    if isequal(montslides_folders{i2}, 'n/a')
+        ROI_Fields(i2).Name = slides_folders{i2};
         ROI_Fields(i2).NotCancer = [];
     else
-        montfile = imread(montfols{i2}); 
+        montfile = imread(montslides_folders{i2}); 
         [colsize, rowsize] = size(montfile); 
-        npix = rowsize(i2)/colstiles(i2); %# of pixels the reduced field is
+        npix = rowsize(i2)/slides_coltils(i2); %# of pixels the reduced field is
         colf = 0:npix:rowsize(i2);   %Making vectors of the indexes of each field
         rowf = 0:npix:colsize(i2);
         colf(1) = 1;
         rowf(1) = 1;
-        ROI_File =[montfolder montfols{i2}];
+        ROI_File =[montfolder montslides_folders{i2}];
         ROI_mont = ReadImageJROI(ROI_File);
         ROI_img = zeros(colsize(i2), rowsize(i2)); %Creating zero matrix of montage
         for i3 = 1:length(ROI_mont)
@@ -48,9 +48,9 @@ for i2= 1:length(fols) %Looping through each slide
         naf = [];
         x=[];
         y=[];
-        for i5 = 1:maxfield(i2)
-            r1 = ceil(i5/colstiles(i2)); %Row number
-            c1 =colstiles(i2)+(i5-(colstiles(i2))*r1); %Col number
+        for i5 = 1:maxfields(i2)
+            r1 = ceil(i5/slides_coltils(i2)); %Row number
+            c1 =slides_coltils(i2)+(i5-(slides_coltils(i2))*r1); %Col number
             rind = rowf(r1:r1+1);
             cind = colf(c1:c1+1);
             if any(any(ROI_img(rind(1):rind(2), cind(1):cind(2))))~=0
@@ -60,12 +60,12 @@ for i2= 1:length(fols) %Looping through each slide
             end
             
         end
-        ROI_Fields(i2).Name = fols{i2};
+        ROI_Fields(i2).Name = slides_folders{i2};
         ROI_Fields(i2).NotCancer = naf;
         figure
         imshow(ROI_img)
         %Checking if correct fields have been removed
-        mont = ones(rowstiles(i2), colstiles(i2))';
+        mont = ones(slides_rowtils(i2), slides_coltils(i2))';
         mont(naf) = 20;
         figure
         image(mont') %transpose cause matlab indexes by consecutive columns not rows

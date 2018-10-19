@@ -1,9 +1,9 @@
-function RUN_3_CycIF_measurements(basefolder,folders, maxfield, maxcycle, dates, DAPIslice, z_cycle, znum, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets)
+function RUN_3_CycIF_measurements(basefolder,slides_folders, maxfields, maxcycle, dates, DAPIslice, z_cycle, z_num, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets, cycles)
 %% Comment out to prevent rewriting over saved mat files
 
-for folder = 1:length(folders)
-    filename_res = [basefolder folders{folder} dates folders{folder} '_Results_BasicCorrection.mat'];
-    mkdir([basefolder folders{folder} '\FociSeg'])
+for folder = 1:length(slides_folders)
+    filename_res = [basefolder slides_folders{folder} dates slides_folders{folder} '_Results.mat'];
+    mkdir([basefolder slides_folders{folder} '\FociSeg'])
     try
         load(filename_res)
     catch
@@ -12,15 +12,14 @@ for folder = 1:length(folders)
     end
 end
 
-trackfile_seg = '\TrackedImages\TrackedField';
-core_rawimage = '\FullStacks\Field';
+
 %% Measuring CycIF
-trackfile_seg = '\TrackedImages\TrackedField';
+trackfile_seg = '\TrackedImages\';
 
 
-for folder = 1:length(folders)
+for folder = 1:length(slides_folders)
     
-    filename_res = [basefolder folders{folder} dates folders{folder} '_Results_BasicCorrection.mat'];
+    filename_res = [basefolder slides_folders{folder} dates slides_folders{folder} '_Results.mat'];
     
     load(filename_res)
     
@@ -28,7 +27,7 @@ for folder = 1:length(folders)
     Field = [];
     % open the tiff file of the DAPI images and segment them separately
     
-    prefix2 = linspace(1,maxfield(folder),maxfield(folder));
+    prefix2 = linspace(1,maxfields(folder),maxfields(folder));
     field = 0;
     
     
@@ -37,9 +36,9 @@ for folder = 1:length(folders)
         for i3 = 1:length(well_nums)
             
             for i2 = 1:length(prefix2)
-                core_rawimage = ['\FullStacks\' well_lets{i1} well_nums(i3) '_Field'];
-                tracking_stack = [basefolder folders{folder} trackfile_seg well_lets{i1} well_nums(i3) '_TrackedField' num2str(prefix2(i2),'%04d') '.tif']; %Tracked field
-                rawimage_stack = [basefolder folders{folder} core_rawimage num2str(prefix2(i2),'%04d') 'test.tif'];%Field test
+                tracking_stack = [basefolder slides_folders{folder} trackfile_seg well_lets{i1} num2str(well_nums(i3)) '_TrackedField' num2str(prefix2(i2),'%04d') '.tif']; %Tracked field
+                core_rawimage = ['\FullStacks\' well_lets{i1} num2str(well_nums(i3)) '_Field'];
+                rawimage_stack = [basefolder slides_folders{folder} core_rawimage num2str(prefix2(i2),'%04d') '.tif']; %Field
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %  if %want to restart program to continue to appending to Field of a slide
@@ -112,8 +111,8 @@ for folder = 1:length(folders)
                     %Making Maximum Intensity Projection of Z-stacks
                     Image_Zstack = []; %Stack of each Z-stack
                     
-                    if cycle == z_cycle
-                        for j4 = 1:znum
+                    if cycles(cycle) == z_cycle
+                        for j4 = 1:z_num
                             try
                                 Image_BK{j4} = Image{j4};
                                 Image_Zstack = cat(3,Image_Zstack,Image{j4});
@@ -170,16 +169,16 @@ for folder = 1:length(folders)
                     Plate{i1, well_nums(i3)}.Field(field).CentroidRow(1:totcyclecells,cycle) = CentroidMat(1,:);
                     Plate{i1, well_nums(i3)}.Field(field).CentroidCol(1:totcyclecells,cycle) = CentroidMat(2,:);
                     
-                    Plate{i1, well_nums(i3)}.Field(field).Area(isnan(Field(field).Area))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).Solidity(isnan(Field(field).Solidity))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).CentroidRow(isnan(Field(field).CentroidRow))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).CentroidCol(isnan(Field(field).CentroidCol))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).Area(isnan(Plate{i1, well_nums(i3)}.Field(field).Area))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).Solidity(isnan(Plate{i1, well_nums(i3)}.Field(field).Solidity))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).CentroidRow(isnan(Plate{i1, well_nums(i3)}.Field(field).CentroidRow))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).CentroidCol(isnan(Plate{i1, well_nums(i3)}.Field(field).CentroidCol))=0;
                     
                     Nuclei_DAPI_stats = regionprops(lb_Nuc_Image,DAPI_BK,'PixelValues');
                     
                     Cytopl_DAPI_stats = regionprops(lb_Cyt_Image,DAPI_BK,'PixelValues');
                     
-                    if cycle == z_cycle
+                    if cycles(cycle) == z_cycle
                         %stats is for Maximum Intensity Projection of all Z-stacks
                         Nuclei_A488_stats = regionprops(lb_Nuc_Image,Image_BK{1},'PixelValues');
                         Nuclei_A555_stats = regionprops(lb_Nuc_Image,MP_Zstack,'PixelValues');
@@ -239,13 +238,13 @@ for folder = 1:length(folders)
                         Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(1:totcyclecells,4*(cycle-1)+4) = cellfun(@mean,{Cytopl_A647_stats.PixelValues});
                     end
                     
-                    Plate{i1, well_nums(i3)}.Field(field).MedianNucSign(isnan(Field(field).MedianNucSign))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).MedianCytSign(isnan(Field(field).MedianCytSign))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).MedianNucSign(isnan(Plate{i1, well_nums(i3)}.Field(field).MedianNucSign))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).MedianCytSign(isnan(Plate{i1, well_nums(i3)}.Field(field).MedianCytSign))=0;
                     
-                    Plate{i1, well_nums(i3)}.Field(field).MeanNucSign(isnan(Field(field).MeanNucSign))=0;
-                    Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(isnan(Field(field).MeanCytSign))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).MeanNucSign(isnan(Plate{i1, well_nums(i3)}.Field(field).MeanNucSign))=0;
+                    Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(isnan(Plate{i1, well_nums(i3)}.Field(field).MeanCytSign))=0;
                     
-                    if cycle == z_cycle
+                    if cycles(cycle) == z_cycle
                         % only use HSF1cycle to segment the foci
                         if totcyclecells > 0
                             % initialize results variables
@@ -254,7 +253,7 @@ for folder = 1:length(folders)
                             Dilate_Nuc_Image = lb_Nuc_Image;
                             FociSeg_Cumulative= 0; % = [];
                             FociZstack = []; %Stack of all z-stack images
-                            for foci_im = 1:znum
+                            for foci_im = 1:z_num
                                 % segement HSF1 foci
                                 try
                                     HSF1Foci_BK = Image{foci_im};%-imopen(Image{foci_im}, strel('disk',15));
@@ -299,10 +298,10 @@ for folder = 1:length(folders)
                             DirectCheckIm = cat(3,uint16(FociCheckImage),uint16(MP_Zstack));
                             DirectCheckIm = cat(3,DirectCheckIm,uint16(DAPI_BK));
                             
-                            imwrite(uint16(DirectCheckIm),[basefolder folders{folder} '\FociSeg\Field' num2str(prefix2(i2),'%04d') '_FociSeg_SV1_normfit.tif'])  %Foci segmentation to check
+                            imwrite(uint16(DirectCheckIm),[basefolder slides_folders{folder} '\FociSeg\Field' num2str(prefix2(i2),'%04d') '_FociSeg_SV1_normfit.tif'])  %Foci segmentation to check
                             
                             FociZstack = cat(3,uint16(FociCheckImage),uint16(FociZstack)); %Stack of 1st=Cumulative Foci segmentation, 2nd... Each z-stack
-                            filez = [basefolder folders{folder} '\FociSeg\' prefix1(i1) 'Field' num2str(prefix2(i2),'%04d') '_FociSeg_Z-Stack.tif']; %File name of z-stack file
+                            filez = [basefolder slides_folders{folder} '\FociSeg\' prefix1(i1) 'Field' num2str(prefix2(i2),'%04d') '_FociSeg_Z-Stack.tif']; %File name of z-stack file
                             
                             saveastiff(uint16(FociZstack),filez);   %Saving tiff file of Foci segmentation for all z-stacks
                             

@@ -1,4 +1,4 @@
-function OutImage = CycIF_Segmentation_normfit_opencellsizeover5_medianpercell_v1(image_in,filename_out,options)
+function OutImage = CycIF_Segmentation_normfit_opencellsizeover5_medianpercell_v2(image_in,filename_out,options)
 %For Myeloma
 % clear all
 % basefolder = 'D:\Myeloma_HSF1_2018-07-27\Myeloma_Segmentation\';
@@ -120,7 +120,7 @@ cellsize = options(4);
 %     figure(6)
 %     imshow(Nuclei,[])
     
-    Nuclei=bwareaopen(Nuclei,cellsize/20);
+    Nuclei=bwareaopen(Nuclei,round(cellsize/20));
     Nuclei = imfill(Nuclei,'holes');
     
     
@@ -200,3 +200,4 @@ cellsize = options(4);
 %    imwrite(overlay,[output testvar 'Seg_overlay_' prefix2{i2} '.tif'])
 %end
 %disp('Done!')
+end
