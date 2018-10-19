@@ -1,17 +1,21 @@
-function RUN_4_CellStateCompare_Path(basefolder, folders, dates,marker_name, antibody_rounds, marker_cycle, HSF1round, canceround, antibody_type, max_rows, well_nums, sol_thresh) 
+function RUN_4_CellStateCompare_Path(basefolder, slides_folders, dates,marker_name, antibody_rounds, marker_cycle, HSF1round, canceround, antibody_type, max_rows, well_nums, sol_thresh) 
 %This program chooses the fields with good staining then plots the
 %frequency of HSF1 foci per core using the good fields 
 % PLOT THE FREQUENCY OF HSF1 FOCI PER CORE
 
 x_plot= [];
 MovingMean = []; 
-for folder = 1:length(folders) 
-openfile = [basefolder folders{folder} dates folders{folder} '_Results_BasicCorrection.mat'];
+for folder = 1:length(slides_folders) 
+openfile = [basefolder slides_folders{folder} dates slides_folders{folder} '_Results.mat'];
 load(openfile)
 
-openfile = 'Incorrect_ROIs.mat'; 
-load(openfile)
-bad_fields = ROI_Fields(folder).NotCancer;    %Vector of fields that are not Cancer but have CD138 signal 
+openfile1 = 'Incorrect_ROIs.mat'; 
+try
+    load(openfile1)
+    bad_fields = ROI_Fields(folder).NotCancer;    %Vector of fields that are not Cancer but have CD138 signal 
+catch
+    bad_fields = [];    %Vector of fields that are not Cancer but have CD138 signal 
+end
 
 Matrix = [];
 Solidity = [];
@@ -100,13 +104,16 @@ end
 x_plot= [];
 MovingMean = []; 
 
-for folder = 1:length(folders) 
-openfile = [basefolder folders{folder} dates folders{folder} '_Results_BasicCorrection.mat'];
+for folder = 1:length(slides_folders) 
+openfile = [basefolder slides_folders{folder} dates slides_folders{folder} '_Results.mat'];
 load(openfile)
 
-openfile = 'Incorrect_ROIs.mat'; 
-load(openfile)
-bad_fields = ROI_Fields(folder).NotCancer;    %Vector of fields that are not Cancer but have CD138 signal 
+try
+    load(openfile1)
+    bad_fields = ROI_Fields(folder).NotCancer;    %Vector of fields that are not Cancer but have CD138 signal 
+catch
+    bad_fields = [];    %Vector of fields that are not Cancer but have CD138 signal 
+end
 
 Matrix = [];
 Solidity = [];
