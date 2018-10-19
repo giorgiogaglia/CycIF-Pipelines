@@ -1,4 +1,4 @@
-function RUN_3_CycIF_measurements(basefolder,slides_folders, maxfield, maxcycle, dates, DAPIslice, z_cycle, znum, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets)
+function RUN_3_CycIF_measurements(basefolder,slides_folders, maxfields, maxcycle, dates, DAPIslice, z_cycle, znum, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets)
 %% Comment out to prevent rewriting over saved mat files
 
 for folder = 1:length(slides_folders)
@@ -27,7 +27,7 @@ for folder = 1:length(slides_folders)
     Field = [];
     % open the tiff file of the DAPI images and segment them separately
     
-    prefix2 = linspace(1,maxfield(folder),maxfield(folder));
+    prefix2 = linspace(1,maxfields(folder),maxfields(folder));
     field = 0;
     
     
