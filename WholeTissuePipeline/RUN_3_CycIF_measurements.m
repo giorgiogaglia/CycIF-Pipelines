@@ -1,9 +1,9 @@
-function RUN_3_CycIF_measurements(basefolder,folders, maxfield, maxcycle, dates, DAPIslice, z_cycle, znum, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets)
+function RUN_3_CycIF_measurements(basefolder,slides_folders, maxfield, maxcycle, dates, DAPIslice, z_cycle, znum, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets)
 %% Comment out to prevent rewriting over saved mat files
 
-for folder = 1:length(folders)
-    filename_res = [basefolder folders{folder} dates folders{folder} '_Results_BasicCorrection.mat'];
-    mkdir([basefolder folders{folder} '\FociSeg'])
+for folder = 1:length(slides_folders)
+    filename_res = [basefolder slides_folders{folder} dates slides_folders{folder} '_Results_BasicCorrection.mat'];
+    mkdir([basefolder slides_folders{folder} '\FociSeg'])
     try
         load(filename_res)
     catch
@@ -12,15 +12,14 @@ for folder = 1:length(folders)
     end
 end
 
-trackfile_seg = '\TrackedImages\TrackedField';
-core_rawimage = '\FullStacks\Field';
+
 %% Measuring CycIF
 trackfile_seg = '\TrackedImages\TrackedField';
 
 
-for folder = 1:length(folders)
+for folder = 1:length(slides_folders)
     
-    filename_res = [basefolder folders{folder} dates folders{folder} '_Results_BasicCorrection.mat'];
+    filename_res = [basefolder slides_folders{folder} dates slides_folders{folder} '_Results_BasicCorrection.mat'];
     
     load(filename_res)
     
@@ -37,9 +36,9 @@ for folder = 1:length(folders)
         for i3 = 1:length(well_nums)
             
             for i2 = 1:length(prefix2)
-                core_rawimage = ['\FullStacks\' well_lets{i1} well_nums(i3) '_Field'];
-                tracking_stack = [basefolder folders{folder} trackfile_seg well_lets{i1} well_nums(i3) '_TrackedField' num2str(prefix2(i2),'%04d') '.tif']; %Tracked field
-                rawimage_stack = [basefolder folders{folder} core_rawimage num2str(prefix2(i2),'%04d') 'test.tif'];%Field test
+                tracking_stack = [basefolder slides_folders{folder} trackfile_seg well_lets{i1} num2str(well_nums(i3)) '_TrackedField' num2str(prefix2(i2),'%04d') '.tif']; %Tracked field
+                core_rawimage = ['\FullStacks\' well_lets{i1} num2str(well_nums(i3)) '_Field'];
+                rawimage_stack = [basefolder slides_folders{folder} core_rawimage num2str(prefix2(i2),'%04d') '.tif']; %Field
                 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %  if %want to restart program to continue to appending to Field of a slide
@@ -299,10 +298,10 @@ for folder = 1:length(folders)
                             DirectCheckIm = cat(3,uint16(FociCheckImage),uint16(MP_Zstack));
                             DirectCheckIm = cat(3,DirectCheckIm,uint16(DAPI_BK));
                             
-                            imwrite(uint16(DirectCheckIm),[basefolder folders{folder} '\FociSeg\Field' num2str(prefix2(i2),'%04d') '_FociSeg_SV1_normfit.tif'])  %Foci segmentation to check
+                            imwrite(uint16(DirectCheckIm),[basefolder slides_folders{folder} '\FociSeg\Field' num2str(prefix2(i2),'%04d') '_FociSeg_SV1_normfit.tif'])  %Foci segmentation to check
                             
                             FociZstack = cat(3,uint16(FociCheckImage),uint16(FociZstack)); %Stack of 1st=Cumulative Foci segmentation, 2nd... Each z-stack
-                            filez = [basefolder folders{folder} '\FociSeg\' prefix1(i1) 'Field' num2str(prefix2(i2),'%04d') '_FociSeg_Z-Stack.tif']; %File name of z-stack file
+                            filez = [basefolder slides_folders{folder} '\FociSeg\' prefix1(i1) 'Field' num2str(prefix2(i2),'%04d') '_FociSeg_Z-Stack.tif']; %File name of z-stack file
                             
                             saveastiff(uint16(FociZstack),filez);   %Saving tiff file of Foci segmentation for all z-stacks
                             
