@@ -4,17 +4,17 @@ tic
 rows = 1;
 cols = 1;
 thr = max(tilesize);
-
+dim1 = '%04d';
 for folder = 1:length(slides_folders)
-    if maxfields(folder)<=100 && maxfields(folder)>10 %Changing dim to get correct file name
-        dim = '%02d';
-    elseif maxfields(folder)>1000
-        dim = '%04d';
-    elseif maxfields(folder)<=10
-        dim = '%1d';
-    else
+%     if maxfields(folder)<=100 && maxfields(folder)>10 %Changing dim to get correct file name
+%         dim = '%02d';
+%     elseif maxfields(folder)>1000
+%         dim = '%04d';
+%     elseif maxfields(folder)<=10
+%         dim = '%1d';
+%     else
         dim = '%03d';
-    end
+%     end
     prefix2 = linspace(1,maxfields(folder),maxfields(folder));
     
     for x2 = 1:length(cycles)
@@ -102,7 +102,7 @@ for folder = 1:length(slides_folders)
                                     for j1 = 1:size(tile_col,1)
                                         for j2 = 1:size(tile_col,2)
                                             try
-                                                temp_img{j1,j2} = imread([master_folderIN filesep slides_folders{folder} filesep 'Cycle_' num2str(cycles(1)) filesep prefix1{i1, i3} num2str(prefix2(i2),dim) ' ' wavelengths{wv1} ' z ' num2str(z1, '%1d') ').tif'];
+                                                temp_img{j1,j2} = imread([master_folderIN filesep slides_folders{folder} filesep 'Cycle_' num2str(cycles(1)) filesep prefix1{i1, i3} num2str(prefix2(i2),dim) ' ' wavelengths{wv1} ' z ' num2str(z1, '%1d') ').tif']);
                                             catch
                                                 temp_mont=[];
                                                 continue
@@ -141,7 +141,7 @@ for folder = 1:length(slides_folders)
                     end
                     
                 end
-                dim1 = '%04d';
+                
                 
                 final_stack = [basefolder filesep slides_folders{folder} filesep 'FullStacks' filesep well_lets{i1} well_nums(i3) '_Field' num2str(prefix2(i2),dim1) '.tif']; 
                 DAPI_stack  = [basefolder filesep slides_folders{folder} filesep 'DAPIStacks' filesep  well_lets{i1} well_nums(i3) 'DAPI_Field' num2str(prefix2(i2),dim1) '.tif'];    
