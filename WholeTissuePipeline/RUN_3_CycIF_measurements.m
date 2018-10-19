@@ -111,7 +111,7 @@ for folder = 1:length(slides_folders)
                     %Making Maximum Intensity Projection of Z-stacks
                     Image_Zstack = []; %Stack of each Z-stack
                     
-                    if cycle == z_cycle
+                    if cycles(cycle) == z_cycle
                         for j4 = 1:znum
                             try
                                 Image_BK{j4} = Image{j4};
@@ -178,7 +178,7 @@ for folder = 1:length(slides_folders)
                     
                     Cytopl_DAPI_stats = regionprops(lb_Cyt_Image,DAPI_BK,'PixelValues');
                     
-                    if cycle == z_cycle
+                    if cycles(cycle) == z_cycle
                         %stats is for Maximum Intensity Projection of all Z-stacks
                         Nuclei_A488_stats = regionprops(lb_Nuc_Image,Image_BK{1},'PixelValues');
                         Nuclei_A555_stats = regionprops(lb_Nuc_Image,MP_Zstack,'PixelValues');
@@ -244,7 +244,7 @@ for folder = 1:length(slides_folders)
                     Plate{i1, well_nums(i3)}.Field(field).MeanNucSign(isnan(Field(field).MeanNucSign))=0;
                     Plate{i1, well_nums(i3)}.Field(field).MeanCytSign(isnan(Field(field).MeanCytSign))=0;
                     
-                    if cycle == z_cycle
+                    if cycles(cycle) == z_cycle
                         % only use HSF1cycle to segment the foci
                         if totcyclecells > 0
                             % initialize results variables
