@@ -2,7 +2,7 @@ function RUN_3_CycIF_measurements(basefolder,slides_folders, maxfield, maxcycle,
 %% Comment out to prevent rewriting over saved mat files
 
 for folder = 1:length(slides_folders)
-    filename_res = [basefolder slides_folders{folder} dates slides_folders{folder} '_Results_BasicCorrection.mat'];
+    filename_res = [basefolder slides_folders{folder} dates slides_folders{folder} '_Results.mat'];
     mkdir([basefolder slides_folders{folder} '\FociSeg'])
     try
         load(filename_res)
@@ -19,7 +19,7 @@ trackfile_seg = '\TrackedImages\TrackedField';
 
 for folder = 1:length(slides_folders)
     
-    filename_res = [basefolder slides_folders{folder} dates slides_folders{folder} '_Results_BasicCorrection.mat'];
+    filename_res = [basefolder slides_folders{folder} dates slides_folders{folder} '_Results.mat'];
     
     load(filename_res)
     
