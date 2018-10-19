@@ -1,4 +1,4 @@
-function RUN_2_segmentstacks(basefolder, slides_folders, maxfield,DAPIslice, cellsize, max_rows, well_nums, well_lets)
+function RUN_2_segmentstacks(basefolder, slides_folders, maxfields,DAPIslice, cellsize, max_rows, well_nums, well_lets)
 % open the tiff file of the DAPI images and segment them separately
 filenameout=0;
 sigma = 1;
@@ -10,7 +10,7 @@ count2 = 0;
 dim = '%04d';
 
 for folder = 1:length(slides_folders)
-    prefix2 = linspace(1,maxfield(folder),maxfield(folder));
+    prefix2 = linspace(1,maxfields(folder),maxfields(folder));
     for i1 = 1:max_rows
         for i3 = 1:length(well_nums)
             for i2 = 1:length(prefix2)
