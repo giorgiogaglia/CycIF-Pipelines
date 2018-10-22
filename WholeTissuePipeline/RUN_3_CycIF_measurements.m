@@ -122,9 +122,9 @@ for folder = 1:length(slides_folders)
                         end
                         MP_Zstack = max(Image_Zstack, [], 3); %Creates Maximum intensity projection of all Z-stacks
                     else
-                        for j4 = 1:3
+                        for j5 = 1:3
                             try
-                                Image_BK{j4} = Image{j4};
+                                Image_BK{j5} = Image{j5};
                             catch
                                 continue
                             end
