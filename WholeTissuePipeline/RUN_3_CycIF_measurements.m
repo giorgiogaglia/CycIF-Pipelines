@@ -45,8 +45,8 @@ for folder = 1:length(slides_folders)
                 %  that is in complete comment out this portion or else it will write over
                 %  Field
                 field = field + 1;
-                Plate{i1, well_nums(i3)}.Fields(field).Name = prefix2(i2);
-                Plate{i1, well_nums(i3)}.Fields(field).Area = [];
+                Plate{i1, well_nums(i3)}.Field(field).Name = prefix2(i2);
+                Plate{i1, well_nums(i3)}.Field(field).Area = [];
                 Plate{i1, well_nums(i3)}.Field(field).Solidity = [];
                 Plate{i1, well_nums(i3)}.Field(field).CentroidRow = [];
                 Plate{i1, well_nums(i3)}.Field(field).CentroidCol = [];
