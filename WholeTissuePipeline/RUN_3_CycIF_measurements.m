@@ -4,12 +4,12 @@ function RUN_3_CycIF_measurements(basefolder,slides_folders, maxfields, maxcycle
 for folder = 1:length(slides_folders)
     filename_res = [basefolder slides_folders{folder} dates slides_folders{folder} '_Results.mat'];
     mkdir([basefolder slides_folders{folder} '\FociSeg'])
-    try
-        load(filename_res)
-    catch
+     try
+         load(filename_res)
+     catch
         save(filename_res)
-        continue
-    end
+         continue
+     end
 end
 
 
@@ -80,8 +80,8 @@ for folder = 1:length(slides_folders)
                     end
                     % Needs to change depending on z-stack
                     DAPI_Image = uint16(imread(rawimage_stack,'Index',DAPIslice(cycle)));
-                    for i2 = 1:length(channels)-1
-                        Image{i2} = uint16(imread(rawimage_stack,'Index',DAPIslice(cycle)+i2));
+                    for t2 = 1:length(channels)-1
+                        Image{t2} = uint16(imread(rawimage_stack,'Index',DAPIslice(cycle)+t2));
                     end
                     
                     % correct shift between colors
