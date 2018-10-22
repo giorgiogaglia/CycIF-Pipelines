@@ -90,7 +90,7 @@ cellsize = options(4);
     seeds = imclose(sImage,strel('disk',2)); 
 %     figure(3)
 %     imshow(seeds,[])
-    seeds=imgaussfilt(seeds,4.75,'FilterSize',round(cellsize*1.4)); %4.75 is best
+    seeds=imgaussfilt(seeds,5,'FilterSize',round(cellsize*1.4)); %4.75 is best
 %     figure(4)
 %     imshow(seeds,[])
     seeds = imregionalmax(seeds);
