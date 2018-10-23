@@ -16,7 +16,7 @@ trackfile_seg = '\TrackedImages\TrackedField';
 core_rawimage = '\FullStacks\Core';
 %% Measuring CycIF 
 
-for i1 = 1:length(filename.prefix1)
+for i1 = 1:length(prefix1)
 
 filename_res = [folderloc dates  '_Results_Measurements.mat'];
 

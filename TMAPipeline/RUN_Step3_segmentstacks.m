@@ -1,37 +1,35 @@
-function RUN_Step3_segmentstacks(folderloc, prefix1,prefix2, DAPIslice, cellsize) 
+function RUN_Step3_segmentstacks(microscope,filename,options) folderloc, prefix1,prefix2, DAPIslice, cellsize) 
 % open the tiff file of the full stack images and segment them separately
-tic
-count2 = 0;
-dim = ['%04d']; 
 
-    for i1 = length(prefix1) 
-        for i2 = 1:length(prefix2)
-            core = ['Core' prefix1{i1}  num2str(prefix2(i2),dim) '.tif'];
-            FileTif = [folderloc filesep 'FullStacks\' core];
+fullstackfolder = [filename.analfolder filesep 'FullStacks' filesep];
+trackedstackfolder = [filename.analfolder filesep 'TrackedStacks' filesep];
+mkdir(trackedstackfolder)
+
+    for i1 = length(filename.prefix1) 
+        for i2 = 1:length(filename.prefix2)
+            core = ['Core' filename.prefix1{i1} filename.midfix1 num2str(filename.prefix2(i2),filename.dim) filename.suffix];
+            FileTif = [fullstackfolder core];
            
             disp(FileTif) %Display 
             
             clear Matrix_1
             
-            track_stack = [folderloc filesep 'TrackedImages\TrackedField' prefix1{i1} num2str(prefix2(i2),dim) '.tif'];
+            track_stack = [trackedstackfolder 'TrackedCore' filename.prefix1{i1} num2str(filename.prefix2(i2),filename.dim) filename.suffix];
             
             if exist(track_stack, 'file') == 2
+                disp(['Segmentation Error: ' core ' has already been tracked - skipping it!'])
                 continue
             end
             
             try
-                DAPIImage=imread(FileTif,'Index',DAPIslice(1)); %Run Segmentation for 1st cycle 
+                DAPIImage=imread(FileTif,'Index',filename.DAPIslices(1)); %Run Segmentation for 1st cycle 
             catch
+                disp(['Segmentation Error: ' core ' not found'])
                 continue
             end
-            
-            count2 = count2 + 1;
-            
+          
             % run segmentation for cycle 1
-            sigma = 1; 
-            writeflag = 0;
-            fixbrokencellsflag = 0;
-            SegImage1 = CycIF_Segmentation_normfit_opencellsizeover5_medianpercell_v1(DAPIImage,0,writeflag,fixbrokencellsflag,sigma,cellsize); %Test segmentation first 
+            SegImage1 = CycIF_Segmentation_normfit_findminvect_v1(DAPIImage,0,options); %Test segmentation first 
             Cycle1Stats = regionprops(SegImage1,'centroid','area','solidity','PixelList','PixelIdxList');
             TrackImage_base = zeros(size(SegImage1));
             TrackImage = [];
@@ -46,14 +44,14 @@ dim = ['%04d'];
                     Matrix_1(i,5) = Cycle1Stats(i).Solidity;
                 end
       
-                for cycle=1:length(DAPIslice)
+                for cycle=1:length(filename.DAPIslices)
                     clear Matrix_N CycleNStats centroid_N
-                    DAPIImage=imread(FileTif,'Index',DAPIslice(cycle));
+                    DAPIImage=imread(FileTif,'Index',filename.DAPIslices(cycle));
                     if max(DAPIImage(:))>0
-                        SegImageN = CycIF_Segmentation_normfit_opencellsizeover5_medianpercell_v1(DAPIImage,0,writeflag,fixbrokencellsflag,sigma,cellsize);    %Segementing each cycle 
+                        SegImageN = CycIF_Segmentation_normfit_findminvect_v1(DAPIImage,0,options);    %Segementing each cycle 
                     else
                         SegImageN = zeros(size(DAPIImage));
-                        disp('This image is empty')
+                        disp(['Segmentation Error: ' core ' DAPI cycle ' num2str((filename.DAPIslices+3)/4) ' image is empty'])
                     end
                     
                     CycleNStats = regionprops(SegImageN,'centroid','area','solidity','PixelList','PixelIdxList');
@@ -78,13 +76,13 @@ dim = ['%04d'];
                         test = zeros(size(TrackN));
                         
                         check = [];
-                        count = 0;
+
                         for i = 1:length(Matrix_N(:,1))
                             pix_overlap = intersect(CycleNStats(i).PixelList,Cycle1Stats(IDX(i)).PixelList,'rows');
                             overlap = length(pix_overlap(:,1))/length(CycleNStats(i).PixelList(:,1));
                             temp_id(i,2)=overlap;
                             test(sub2ind(size(SegImage1),CycleNStats(i).PixelList(:,2),CycleNStats(i).PixelList(:,1)))= D(i);
-                            if overlap > 0.5
+                            if overlap > options.cellfracoverlap
                                 TrackN(sub2ind(size(SegImage1),CycleNStats(i).PixelList(:,2),CycleNStats(i).PixelList(:,1)))=IDX(i);
                             else
                                 check = [check i];

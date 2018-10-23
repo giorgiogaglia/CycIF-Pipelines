@@ -4,11 +4,16 @@ writeflag = options.writeflag;
 fixbrokencellsflag = options.fixbrokencellsflag;
 sigma = options.sigma;
 cellsize = options.cellsize;
-backgorund = options.backgorund;
+background = options.backgorund/10;
+method = options.findminvect_method;
+quantile = options.findminvect_quantile;
+fold = options.findminvect_fold;
+smallmorphs = options.smallmorphs;
+
 
     % load image to be segmented if not loaded already
     if ischar(image_in)
-        RawImage = double(imread(filename_in));
+        RawImage = double(imread(image_in));
     else
         RawImage = double(image_in);
     end
@@ -26,7 +31,7 @@ backgorund = options.backgorund;
    
     
     % then determine the threshold by fitting two gaussians
-    TwoNormModel = fitgmdist(log2(sImage(sImage>backgorund)),2); 
+    TwoNormModel = fitgmdist(log2(sImage(sImage>background)),2); 
     [~,m]=max(TwoNormModel.mu);
     [~,m_min]=min(TwoNormModel.mu);
     thr = 2^(TwoNormModel.mu(m)-sigma*TwoNormModel.Sigma(:,:,m));
@@ -37,12 +42,11 @@ backgorund = options.backgorund;
     
     
     % apply a gaussian filter to smooth image and pick up cells
-
-    seeds = imclose(sImage,strel('disk',2)); 
-    seeds=imgaussfilt(seeds,4.75,'FilterSize',round(cellsize*1.4)); %4.75 is best
+    seeds = imclose(sImage,strel('disk',ceil(smallmorphs))); 
+    seeds=imgaussfilt(seeds,smallmorphs*2.375,'FilterSize',round(cellsize*1.4)); %4.75 is best
     seeds = imregionalmax(seeds);
     seeds=seeds&sImage>thr;
-    seeds=imdilate(seeds,strel('disk',4));
+    seeds=imdilate(seeds,strel('disk',ceil(smallmorphs*2)));
     
     
     % threshold and watershed image
@@ -51,14 +55,14 @@ backgorund = options.backgorund;
     L=watershed(imimposemin(-sImage,seeds));
     Nuclei=ThresImage&L;
 
-    Nuclei=bwareaopen(Nuclei,cellsize);
+    Nuclei=bwareaopen(Nuclei,ceil(cellsize));
     Nuclei = imfill(Nuclei,'holes');
     
     
     %%%%%%%%%%%%%% FIXING BROKEN CELLS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     if fixbrokencellsflag == 1
         LineSegments=ThresImage&~L;
-        LineSegments=bwareaopen(LineSegments,5);
+        LineSegments=bwareaopen(LineSegments,ceil(smallmorphs*2.5));
         LineSegments=bwlabel(LineSegments,8);
         
         for Seg_i=1:max(LineSegments(:))
@@ -79,21 +83,21 @@ backgorund = options.backgorund;
                 Nuclei=Nuclei|LineSegments==Seg_i;
             end
             
-            Nuclei=imopen(Nuclei,strel('disk',2));
+            Nuclei=imopen(Nuclei,strel('disk',ceil(smallmorphs)));
         end
     end
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % erode out a little bit of cells
     NucleiComplement = ~Nuclei;
-    NucleiComplement = imdilate(NucleiComplement,strel('disk',1));
+    NucleiComplement = imdilate(NucleiComplement,strel('disk',ceil(smallmorphs/2)));
     Nuclei = Nuclei - NucleiComplement > 0;
     Nuclei = bwlabel(Nuclei,8);
     
     if max(Nuclei(:)>0)
         % shave off the excess for each cell
         pixel_values = regionprops(Nuclei, sImage, 'PixelValues');
-        quant = cellfun(@(x) findmininvect(log2(x),3,0.3,3), {pixel_values.PixelValues});
+        quant = cellfun(@(x) findmininvect(log2(x),method,quantile,fold), {pixel_values.PixelValues});
         
         if ~isnan(quant)
             
