@@ -1,9 +1,5 @@
-function RUN_2_segmentstacks(basefolder, slides_folders, maxfields,DAPIslice, cellsize, max_rows, well_nums, well_lets)
+function RUN_2_segmentstacks(basefolder, slides_folders, maxfields,DAPIslice, options, max_rows, well_nums, well_lets)
 % open the tiff file of the DAPI images and segment them separately
-sigma = 1;
-writeflag = 0;
-fixbrokencellsflag = 0;
-options = [writeflag,fixbrokencellsflag,sigma,cellsize];
 imagefolder = 'FullStacks\';
 count2 = 0;
 dim = '%04d';
