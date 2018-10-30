@@ -79,10 +79,18 @@ dates = '\2018-10-19';
 % antibody_rounds = [3, 6, 14, 7, 15]; %Numbering is 1=DAPI cycle 1; 2= 488 cycle 1; 3=555 cycle 1; 4=647 cycle 1 
 % marker_cycle = [1 1 2 3 4]; %Cycle the antibody is in 1 being the first cycle in cycles variable 
 % canceround = 10; %Used to filter the data based on the cancer marker
-
-% THRESHOLD VALUES
-cellsize = 31;     %Threshold for cell segmentation (must be odd) 
 % sol_thresh = 0.9;    %Threshold to filter data based on cancer marker 
+
+%7) USER INPUT PARAMETERS FOR SEGMENTATION
+options.cellsize = 31;     %Threshold for cell segmentation (must be odd) 
+options.sigma = 1; 
+options.findminvec_method = 3;
+options.findminvec_quantile = 0.3;
+options.findminvec_folddiff = 3;
+options.writeflag = 0;
+options.fixbrokencellsflag = 0;
+sigma = 1;
+
 
 
 % 7) IF THERE ARE Z-STACKS
@@ -96,8 +104,7 @@ HSF1round = 3; %Numbering is 1=DAPI cycle 1; 2= 488 cycle 1; 3=555 cycle 1; 4=64
 thr = 2; %Foci threshold 
 
 %% Running analysis 
-[base_folder,filename, ext] = fileparts(master_folderIN); 
-basefolder = [base_folder '\Analysis\']; 
+basefolder = [master_folderIN '\Analysis\']; 
 basicfolderloc = [basic_folderloc '\Cycle_'];
 maxcycle = length(cycles); 
 tilesize = [2048 2048];
@@ -136,9 +143,9 @@ end
 
 %%
 disp('Run 1: Making Stacks')
-%RUN_1_makecorestacks(master_folderIN, basefolder,basicfolderloc, slides_folders, maxfields, cycles, tilesize, prefix1, wavelengths, z_wave, z_cycle, max_rows, well_nums , well_lets, DAPIwv)
+RUN_1_makecorestacks(master_folderIN, basefolder,basicfolderloc, slides_folders, maxfields, cycles, tilesize, prefix1, wavelengths, z_wave, z_cycle, max_rows, well_nums , well_lets, DAPIwv)
 disp('Run 2: Segmenting Cells')
-RUN_2_segmentstacks(basefolder, slides_folders, maxfields,DAPIslice, cellsize, max_rows, well_nums, well_lets)
+RUN_2_segmentstacks(basefolder, slides_folders, maxfields,DAPIslice, options, max_rows, well_nums, well_lets)
 disp('Run 3: Foci Segmentation & making Measurements')
 RUN_3_CycIF_measurements(basefolder,slides_folders, maxfields, maxcycle, dates, DAPIslice, z_cycle, z_num, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets, cycles)
 if ~isempty(montfols)
