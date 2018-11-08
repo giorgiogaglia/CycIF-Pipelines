@@ -1,4 +1,4 @@
-function RUN_1_makecorestacks(master_folderIN, basefolder,basicfolderloc, slides_folders, maxfields, cycles, tilesize, prefix1, wavelengths, z_wave, z_cycle, max_rows, well_nums , well_lets, DAPIwv)
+function RUN_1_makecorestacks(master_folderIN, basefolder,basicfolderloc, slides_folders, maxfields, cycles, tilesize, prefix1, wavelengths, z_wave, z_cycle,z_num, max_rows, well_nums , well_lets, DAPIwv)
 
 tic
 rows = 1;
@@ -98,7 +98,7 @@ for folder = 1:length(slides_folders)
 
                             if  cycles(c1) == z_cycle && isequal(z_wave, wavelengths{wv1}) %z-stacks
                                 %disp('z-stacks')
-                                for z1 = 1:5
+                                for z1 = 1:z_num
                                     for j1 = 1:size(tile_col,1)
                                         for j2 = 1:size(tile_col,2)
                                             try

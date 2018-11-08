@@ -1,6 +1,6 @@
 function RUN_3_CycIF_measurements(basefolder,slides_folders, maxfields, maxcycle, dates, DAPIslice, z_cycle, z_num, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets, cycles)
 %% Comment out to prevent rewriting over saved mat files
-clearvars -except basefolder slides_folders maxfields maxcycle dates DAPIslice z_cycle z_num thr CYCLEslice prefix1 max_rows well_nums well_lets cycles
+
 for folder = 1:length(slides_folders)
     filename_res = [basefolder slides_folders{folder} dates slides_folders{folder} '_Results.mat'];
     mkdir([basefolder slides_folders{folder} '\FociSeg'])

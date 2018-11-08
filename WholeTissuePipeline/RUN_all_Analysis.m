@@ -143,7 +143,7 @@ end
 
 %%
 disp('Run 1: Making Stacks')
-RUN_1_makecorestacks(master_folderIN, basefolder,basicfolderloc, slides_folders, maxfields, cycles, tilesize, prefix1, wavelengths, z_wave, z_cycle, max_rows, well_nums , well_lets, DAPIwv)
+RUN_1_makecorestacks(master_folderIN, basefolder,basicfolderloc, slides_folders, maxfields, cycles, tilesize, prefix1, wavelengths, z_wave, z_cycle,z_num, max_rows, well_nums , well_lets, DAPIwv)
 disp('Run 2: Segmenting Cells')
 RUN_2_segmentstacks(basefolder, slides_folders, maxfields,DAPIslice, options, max_rows, well_nums, well_lets)
 disp('Run 3: Foci Segmentation & making Measurements')

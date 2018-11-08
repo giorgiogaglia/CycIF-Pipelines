@@ -1,13 +1,15 @@
-function RUN_3_CycIF_measurements(basefolder,slides_folders, maxfields, maxcycle, dates, DAPIslice, z_cycle, z_num, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets, cycles)
+function RUN_3_CycIF_measurements_append(basefolder,slides_folders, maxfields, maxcycle, dates, DAPIslice, z_cycle, z_num, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets, cycles, first_cycle)
 %% Comment out to prevent rewriting over saved mat files
-clearvars -except basefolder slides_folders maxfields maxcycle dates DAPIslice z_cycle z_num thr CYCLEslice prefix1 max_rows well_nums well_lets cycles
+clearvar -except (basefolder,slides_folders, maxfields, maxcycle, dates, DAPIslice, z_cycle, z_num, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets, cycles) 
 for folder = 1:length(slides_folders)
     filename_res = [basefolder slides_folders{folder} dates slides_folders{folder} '_Results.mat'];
     mkdir([basefolder slides_folders{folder} '\FociSeg'])
      try
          load(filename_res)
+         dnf = 1; %Mat file already exists do not write over!
      catch
         save(filename_res)
+        dnf = 0; 
          continue
      end
 end
@@ -45,6 +47,7 @@ for folder = 1:length(slides_folders)
                 %  that is in complete comment out this portion or else it will write over
                 %  Field
                 field = field + 1;
+                if dnf == 0
                 Plate{i1, well_nums(i3)}.Field(field).Name = prefix2(i2);
                 Plate{i1, well_nums(i3)}.Field(field).Area = [];
                 Plate{i1, well_nums(i3)}.Field(field).Solidity = [];
@@ -56,6 +59,7 @@ for folder = 1:length(slides_folders)
                 Plate{i1, well_nums(i3)}.Field(field).MeanCytSign = [];
                 Plate{i1, well_nums(i3)}.Field(field).HSF1Foci_Area = [];
                 Plate{i1, well_nums(i3)}.Field(field).HSF1Foci_Sign = [];
+                end 
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 
                 try
@@ -143,7 +147,7 @@ for folder = 1:length(slides_folders)
                     
                     stats_NucImage = regionprops(lb_Nuc_Image,'Area','Solidity','Centroid');
                     
-                    if cycle == 1 %initializing size of struct
+                    if cycles(cycle) == first_cycle && dnf == 0  %initializing size of struct if first cycle 
                         totcells = length(stats_NucImage);
                         Plate{i1, well_nums(i3)}.Field(field).Name = prefix2(i2);
                         Plate{i1, well_nums(i3)}.Field(field).Area = zeros(totcells,maxcycle)+NaN;

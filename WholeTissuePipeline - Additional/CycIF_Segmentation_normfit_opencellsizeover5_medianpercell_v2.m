@@ -33,10 +33,10 @@ function OutImage = CycIF_Segmentation_normfit_opencellsizeover5_medianpercell_v
 %     image_in = DAPIImage;
 %     
     % load image to be segmented if not loaded already
-writeflag = options(1);
-fixbrokencellsflag = options(2);
-sigma = options(3);
-cellsize = options(4); 
+writeflag = options.writeflag;
+fixbrokencellsflag = options.fixbrokencellsflag;
+sigma = options.sigma;
+cellsize = options.cellsize; 
     if ischar(image_in)
         RawImage = double(imread(filename_in));
     else
@@ -165,8 +165,8 @@ cellsize = options(4);
     if max(Nuclei(:)>0)
         % shave off the excess for each cell
         pixel_values = regionprops(Nuclei, sImage, 'PixelValues');
-        quant = cellfun(@(x) findmininvect(log2(x),3,0.3,3), {pixel_values.PixelValues});
-        %method,def_quant,belowquant
+        %quant = cellfun(@(x) findmininvect(log2(x),3,0.3,3), {pixel_values.PixelValues});
+        quant = cellfun(@(x) findmininvect(log2(x),options.findminvec_method,options.findminvec_quantile,options.findminvec_folddiff), {pixel_values.PixelValues});
         if ~isnan(quant)
             
             quant = round(2.^quant);
