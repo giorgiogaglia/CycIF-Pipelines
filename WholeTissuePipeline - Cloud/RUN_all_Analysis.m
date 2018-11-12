@@ -1,5 +1,4 @@
-clear all
-%APPENDS TO PREVIOUSLY ANLAYZED DATA 
+% clear all
 % This Code is supposed to run all the steps of the t-CycIF Analysis
 % Pipeline in MatLab
 
@@ -74,7 +73,6 @@ montfols = {''};                     % names of the ROI for each montage
 
 % 6) USER INPUT PARAMTERS
 cycles = [1 2 3]; %Cycle number is based on number in cycles_folders 
-first_cycle = 1; %Cycle that you compare all subsequent cycles to e.g. segmentation 
 dates = '\2018-10-19'; 
 % marker_name = {'HSF1','Hsp70','Hsp90','CD138','CytoC'}; %List of markers
 % antibody_type = {'N', 'C', 'C','C'}; %Type of marker for each antibody; N= Nucleus; C= Cytoplasm 
@@ -145,11 +143,18 @@ end
 
 %%
 disp('Run 1: Making Stacks')
-RUN_1_makecorestacks_append(master_folderIN, basefolder,basicfolderloc, slides_folders, maxfields, cycles, tilesize, prefix1, wavelengths, z_wave, z_cycle,z_num, max_rows, well_nums , well_lets, DAPIwv)
+RUN_1_makecorestacks(master_folderIN, basefolder,basicfolderloc, slides_folders, maxfields, cycles, tilesize, prefix1, wavelengths, z_wave, z_cycle,z_num, max_rows, well_nums , well_lets, DAPIwv)
 disp('Run 2: Segmenting Cells')
-RUN_2_segmentstacks_append(basefolder, slides_folders, maxfields,DAPIslice, options, max_rows, well_nums, well_lets, first_cycle)
+RUN_2_segmentstacks(basefolder, slides_folders, maxfields,DAPIslice, options, max_rows, well_nums, well_lets)
 disp('Run 3: Foci Segmentation & making Measurements')
-RUN_3_CycIF_measurements_append(basefolder,slides_folders, maxfields, maxcycle, dates, DAPIslice, z_cycle, z_num, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets, cycles, first_cycle)
+RUN_3_CycIF_measurements(basefolder,slides_folders, maxfields, maxcycle, dates, DAPIslice, z_cycle, z_num, thr, CYCLEslice, prefix1,max_rows, well_nums, well_lets, cycles)
+if ~isempty(montfols)
+    disp('Removing ROIs')
+    remove_ROI(slides_folders, slides_rowtils, slides_coltils, maxfields,montfolder, montfols) 
+end
+
+% % disp('Run 4: Creating Graphs')
+% RUN_4_CellStateCompare_Path(basefolder, slides_folders, dates,marker_name, antibody_rounds, marker_cycle, HSF1round, canceround, antibody_type, max_rows, well_nums)
 
 %% OVERVIEW AND EXPLANATION
 
