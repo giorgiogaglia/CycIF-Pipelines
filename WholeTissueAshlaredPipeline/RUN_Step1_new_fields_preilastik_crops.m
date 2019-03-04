@@ -1,56 +1,70 @@
-%Program splits ASHLAR image into different sized fields and into cropped
-%images for Ilastik 
-%CordMatrix = [ field# row column x y coordinates];
-%Outputs "Field_row_column.tif" files 
-filename.folders.ashlared = 'Ashlared'; 
-filename.folders.output = 'ANALYSIS\'; 
-filename.folders.fullstacks = 'FullStacks\';
-filename.folders.ilastikprob= 'Ilastik_Probabilities\';
-filename.folders.ilastikseg = 'Ilastik_Segmentation\';
-filename.folders.results = 'Analysis_Results\';
-filename.folders.coordinates = 'Coordinates_FullStacks\';
-filename.folders.cropfol = 'CroppedData\';
+clear all
+% This code is supposed to run the FIRST step of the t-CycIF Ashlar
+% Analysis Pipeline
+%
+%t-CycIF ASHLAR ANALYSIS PIPELINE 
+% Step 0: Stitch and register the fields into an "ome.tif" by using Ashlar 
+% Step 1:(RUN_Step1_new_fields_preilastik_crops.m) Cut the "ome.tif" into 
+% fields of a size specified by the user and cut crops out of each field 
+% for Ilastik training. Create full stacks of all cycles and channels. 
+% Omits fields that have no cells.   
+% Step 2: Create segmentation probabilities using Ilastik
+% (RUN_ALL_segon.m)Runs segmentation and measurements scripts (Step 3 & 4) 
+% Step 3:(RUN_Step3_segmentfromilastik.m) Segment based on segmentation
+% probabilities produce by Ilastik
+% Step 4: (RUN_Step4_CycIF_measurments_ilastik.m) Makes measurements of
+% signal and foci segmentation 
+%
+% In order to begin the analysis a set of parameters are needed to be
+% defined by the user 
+% 1) where the files are located and how the names are formatted
+% 2) parameters to choose the size of the field and number of crops per
+% field 
 
-%% Edit below 
+%%% OUTPUTS 
+% FullStacks: AllTheRawData\OmeTifName\FullStacks\OmeTifName_Field_row_column.tif
+% CroppedStacks: AllTheRawData\OmeTifName\CroppedData\OmeTifName_Field_row_column_#ofCrop.tif
+% Coordinates: AllTheRawData\Coordinates_FullStacks\OmeTifName.mat 
+% Coordinates Matrix: Coordinates.Field(row,column) = [keep field (0= no, 1=yes), x1, x2, y1, y2]
+%
+%%% FILE LOCATION AND FORMATTING
+%
+% The code will run on the "ome.tif" file produced by ASHLAR 
+% The expected file structure is that a master folder will contain all of
+% the "ome.tif" files from each slide
+%
+% eg. AllTheRawData\SlideName.ome.tif 
+
+% 1) THE MASTER OME.TIF DATA FOLDER
+
 filename.folders.main = 'W:\Analysis\Ashlared\';
-filename.folders.fols = {'AJ0160_P2',...
-    'AJ0160_P3',...
-    'AJ0160_P5',...
-    'AJ0160_P6',...
-    'AJ0176_P1',...
-    'AJ0176_P2',...
-    'AJ0176_P3',...
-    'AJ0176_P4',...
-    'AJ0179_P1',...
-    'AJ0179_P2',...
-    'AJ0179_P4',...
-    'AJ0179_P5',...
-    'AJ0179_P6',...
-    'AJ0188_P1',...
-    'AJ0188_P2',...
-    'AJ0188_P4',...
-    'AJ0188_P5',...
-    'AJ0188_P6',...
-    'AJ0189_P2',...
-    'AJ0189_P4',...
-    'AJ0189_P5',...
-    'AJ0189_P6',...
-    'AJ0205_P1',...
-    'AJ0205_P3',...
-    'AJ0205_P4',...
-    'AJ0205_P5',...
-    'AJ0205_P6'}; %Name of Ashlared image without '.ome.tif' ending 
 
-filename.dim = ['%02d']; 
-filename.sizefield = 6000; %Size of field desired 
+% 2) SLIDE SPECIFIC PARAMETERS:
+filename.folders.fols = {'AJ0160_P2', 'AJ0160_P3'}; %Name of ASHLARED image without '.ome.tif' ending 
 filename.cycles = 8; % total # of cycles
-filename.crops = 2; %# of cropped fields desired per field 
 
+% 3) USER DESIRED PARAMETERS 
+filename.sizefield = 6000; %Size of field desired for a square 
+filename.crops = 2; %# of cropped fields desired per field 
+filename.dim = ['%02d']; %Delimeter 
+
+% 4) OPTIONS  
 options.max_prob = 65535;
 options.cellsize = 20;
 options.date = '20190223';
 
-%% Do not edit 
+% 5) OUTPUT PARAMETERS: DO NOT EDIT 
+filename.folders.output = 'ANALYSIS\'; 
+filename.folders.fullstacks = 'FullStacks\';
+filename.folders.cropfol = 'CroppedData\';
+filename.folders.coordinates = 'Coordinates_FullStacks\';
+filename.folders.ilastikprob= 'Ilastik_Probabilities\';
+filename.folders.ilastikseg = 'Ilastik_Segmentation\';
+filename.ilastiksuffix = '_Probabilities.tif';
+filename.folders.results = 'Analysis_Results\';
+filename.folders.fociseg = 'Foci_Segmentation\'; 
+filename.suffix = '.tif';
+
 outputfold = [filename.folders.main filename.folders.output]; 
 addpath(filename.folders.main)
 mkdir(outputfold) 
