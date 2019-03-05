@@ -1,4 +1,4 @@
-
+%Renames files from outputfilename to rename 
 basefolder = 'W:\Analysis\';
 slideNames = {'AJ0188_P1', 'AJ0188_P2', 'AJ0188_P3', 'AJ0188_P4', 'AJ0188_P5','AJ0188_P6', 'AJ0189_P1', 'AJ0189_P2', 'AJ0189_P3', 'AJ0189_P4', 'AJ0189_P5', 'AJ0189_P6',...
     'AJ0205_P1', 'AJ0205_P2', 'AJ0205_P3', 'AJ0205_P4', 'AJ0205_P5','AJ0205_P6'}; 
