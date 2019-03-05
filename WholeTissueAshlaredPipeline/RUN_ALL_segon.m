@@ -2,7 +2,7 @@ clear all
 % This code is supposed to run the THIRD AND FOURTH step of the t-CycIF Ashlar
 % Analysis Pipeline
 %
-%t-CycIF ASHLAR ANALYSIS PIPELINE 
+% t-CycIF ASHLAR ANALYSIS PIPELINE 
 % Step 0: Stitch and register the fields into an "ome.tif" by using Ashlar 
 % Step 1:(RUN_Step1_new_fields_preilastik_crops.m) Cut the "ome.tif" into 
 % fields of a size specified by the user and cut crops out of each field 
@@ -14,7 +14,7 @@ clear all
 % probabilities produce by Ilastik
 % Step 4: (RUN_Step4_CycIF_measurments_ilastik.m) Makes measurements of
 % signal and foci segmentation 
-%
+% 
 % In order to begin the analysis a set of parameters are needed to be
 % defined by the user 
 % 1) where the files are located and how the names are formatted

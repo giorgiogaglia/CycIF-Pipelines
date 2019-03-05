@@ -1,6 +1,6 @@
 function RUN_Step4_CycIF_measurements_ilastik(filename, options)  
 
-filename.folders.resultfile = [filename.folders.results 'Results_' options.date '.mat'];
+
 
 addpath(filename.folders.main)
 mkdir([filename.folders.main  filename.folders.output 'Analysis_Results\']);
@@ -10,6 +10,7 @@ core = 0;
 
 for k = 1:length(filename.folders.fols)
     fold = filename.folders.fols{k};
+    filename.folders.resultfile = [filename.folders.results fold '_Results_' options.date '.mat'];
     addpath(filename.folders.main)
     mkdir([filename.folders.main filename.folders.output fold filesep filename.folders.fociseg]); 
     for i1 = 1:filename.prefix1
