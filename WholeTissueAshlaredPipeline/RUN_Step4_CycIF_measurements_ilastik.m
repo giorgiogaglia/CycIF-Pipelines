@@ -23,13 +23,13 @@ for k = 1:length(filename.folders.fols)
             catch
                 continue
             end
-            disp(FileTif)
+            disp(CoreFile)
             
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %  if %want to restart program to continue to appending to Field of a slide
             %  that is in complete comment out this portion or else it will write over
             %  Field
-            core = (i1-1)*length(filename.prefix2)+i2;
+            core = core + 1; 
             Field(core).Name = ['Field_' num2str(i1 , filename.dim) '_' num2str(i2 , filename.dim)];
             Field(core).Area = [];
             Field(core).Solidity = [];
