@@ -9,8 +9,11 @@ for k = 1:length(filename.folders.fols)
     fold = filename.folders.fols{k}; 
     addpath(filename.folders.main)
     mkdir([filename.folders.main filename.folders.output fold filesep  filename.folders.ilastikseg])
-    for i1 = 1:filename.prefix1
-        for i2 = 1:filename.prefix2
+    coordmat = [filename.folders.main filename.folders.output filename.folders.coordinates fold '.mat'];
+    load(coordmat, 'Coordinates')
+    [r, c] = size(Coordinates.Field);
+    for i1 = 1:r
+        for i2 = 1:c
             core = [fold '_Field_' num2str(i1 , filename.dim) '_' num2str(i2 , filename.dim)];
             FileTif = [filename.folders.main filename.folders.output fold filesep filename.folders.fullstacks core  filename.suffix];
             try
