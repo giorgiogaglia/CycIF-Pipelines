@@ -51,11 +51,13 @@ filename.folders.main = 'W:\Analysis\Ashlared\';
 % 2) SLIDE SPECIFIC PARAMETERS:
 filename.folders.fols = {'AJ0160_P2', 'AJ0160_P3'}; %Name of ASHLARED image without '.ome.tif' ending 
 filename.cycles = 8; % total # of cycles
+filename.prefix1 = 10; % number larger then the max number of rows of fields
+filename.prefix2 = 10; % number larger then the max number of columns of fields 
 
 % 3) USER DESIRED PARAMETERS 
 filename.sizefield = 6000; %Size of field desired for a square 
 filename.crops = 2; %# of cropped fields desired per field 
-
+filename.dim = ['%02d']; %Delimeter 
 
 % 4) OPTIONS  
 % Step 3: SEGMENTATION OPTIONS 
@@ -80,18 +82,10 @@ filename.folders.ilastikseg = 'Ilastik_Segmentation\';
 filename.ilastiksuffix = '_Probabilities.tif';
 filename.folders.results = 'Analysis_Results\';
 filename.folders.fociseg = 'Foci_Segmentation\'; 
-filename.folders.ROI = 'ROIpixels\'; 
 filename.suffix = '.tif';
-filename.folders.montage = 'MontageforROI\'; 
-filename.dim = ['%02d']; %Delimeter 
 
-%% MAKE SURE TO COMMENT OUT THE OTHER STEPS THAT YOU AREN'T AT YET!!
-% Runs Step 1: (Creating FullStacks, CroppedStacks, Montages) 
+%% Runs Step 1: 
 RUN_Step1_new_fields_preilastik_crops(filename,options) 
-
 %% Runs Step 3 and 4: (Segmentation and Measurments) 
 RUN_Step3_segmentfromilastik(filename, options) 
 RUN_Step4_CycIF_measurements_ilastik(filename, options)  
-
-%% Run Step 5: (ROI Selection)
-RUN_Step5_ROI(filename, options)
