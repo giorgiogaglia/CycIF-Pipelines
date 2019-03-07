@@ -94,4 +94,4 @@ RUN_Step3_segmentfromilastik(filename, options)
 RUN_Step4_CycIF_measurements_ilastik(filename, options)  
 
 %% Run Step 5: (ROI Selection)
-RUN_Step5_ROI(filename)
+RUN_Step5_ROI(filename, options)

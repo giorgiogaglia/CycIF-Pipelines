@@ -1,6 +1,6 @@
-DIR ="W:/Analysis/"; 
-myDIR = newArray("AJ0160_P1","AJ0160_P2", "AJ0160_P3", "AJ0160_P5","AJ0176_P1","AJ0176_P2","AJ0176_P3","AJ0176_P4","AJ0176_P5"); 
-myType =newArray("/CroppedData/", "/SplitData/");
+DIR ="W:/Analysis/"; //Folder where raw data is 
+myDIR = newArray("AJ0160_P1"); //Name of OmeTif w/o ome.tif 
+myType =newArray("/CroppedData/", "/FullStacks/");
 suffix = ".tif";
 for (k=0; k< myDIR.length; k++) {
 	for (j=0; j< myType.length; j++) {

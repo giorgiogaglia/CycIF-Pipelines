@@ -1,27 +1,11 @@
-%function RUN_Step5_ROI(filename) 
+function RUN_Step5_ROI(filename, options) 
 % ROI sets must be saved as the name of the ome.tif it corresponds to 
-    
-filename.folders.main = 'Z:\sorger\data\IN_Cell_Analyzer_6000\Giorgio\2019-01-03_Mouse_Lung_Tumors_Round2\Analysis\';
-filename.folders.fols = {'AJ0160_P3'}; 
-filename.folders.output = 'ANALYSIS\'; 
-filename.folders.fullstacks = 'FullStacks\';
-filename.folders.cropfol = 'CroppedData\';
-filename.folders.coordinates = 'Coordinates_FullStacks\';
-filename.folders.ilastikprob= 'Ilastik_Probabilities\';
-filename.folders.ilastikseg = 'Ilastik_Segmentation\';
-filename.ilastiksuffix = '_Probabilities.tif';
-filename.folders.results = 'Analysis_Results\';
-filename.folders.fociseg = 'Foci_Segmentation\'; 
-filename.folders.ROI = 'ROIpixels\'; 
-filename.folders.montage = 'MontageforROI\'; 
-filename.suffix = '.tif';
-filename.dim = ['%02d']; %Delimeter 
-
 addpath(filename.folders.main)
 mkdir([filename.folders.main filename.folders.output filename.folders.ROI]); 
 %% Creating structure of ROIs
 for i2= 1:length(filename.folders.fols) %Looping through each slide
         fold = filename.folders.fols{i2};
+        filename.folders.resultfile = [filename.folders.results fold '_Results_' options.date '.mat'];
         coordmat = [filename.folders.main filename.folders.output filename.folders.coordinates fold '.mat'];
         load(coordmat) 
         orowsize = x; %Size of largest image of omi tif 
@@ -46,11 +30,11 @@ for i2= 1:length(filename.folders.fols) %Looping through each slide
         end 
         
         %% Getting ROI coordinates in decreased slide Montage and filling in ROI 
-        ROI_File =[filename.montfolder filename.folders.fols{i2} '.roi']; %one ROI 
+        ROI_File =[filename.folders.main filename.folders.output filename.folders.montage filename.folders.fols{i2} '.roi']; %one ROI 
         if exist(ROI_File, 'file') == 2
             ROI_mont = ReadImageJROI(ROI_File);
         else 
-            ROI_File =[filename.montfolder filename.folders.fols{i2} '.zip']; %Multiple ROI's are saved in a zip file 
+            ROI_File =[filename.folders.main filename.folders.output filename.folders.montage filename.folders.fols{i2} '.zip']; %Multiple ROI's are saved in a zip file 
             ROI_mont = ReadImageJROI(ROI_File);
         end 
         
@@ -98,6 +82,8 @@ for i2= 1:length(filename.folders.fols) %Looping through each slide
 ROI_pixels = [];
 field = 0; 
 [r, c] = size(Coordinates.Field);
+filename_results = [filename.folders.main filename.folders.output filename.folders.resultfile];
+load(filename_results, 'Field')
 for j1 = 1:r
     for j2 = 1:c
         coordinfo = Coordinates.Field{j1,j2}; %Coordinates matrix info for one field: [keep field (0= no, 1=yes), x1, x2, y1, y2]
@@ -123,9 +109,37 @@ for j1 = 1:r
 %                 continue
 %             end 
 %             hold off 
+
+                disp(Field(field).Name)
+                Centroids =[];
+                ROI_loc = [];
+                if Field(field).Name == ROI_pixels(field).Name
+                    Centroids(:,1) = round(Field(field).CentroidRow);%Centroid locations
+                    Centroids(:,2) = round(Field(field).CentroidCol);
+                    try
+                        ROI_loc = ROI_pixels(field).PixelList.PixelList(:,:); %ROI locations
+                    catch
+                        [r1, c1]= size(Centroids);
+                        ROI_loc = zeros(r1, c1);
+                    end
+                    ROI_pixels(field).Index=ismember(Centroids, ROI_loc, 'rows'); %index of centroids within the ROI- specifies based on rows
+%                     
+%                     %             %IF YOU WANT TO DOUBLE CHECK THE ROIS
+%                                 figure
+%                                 img = ['Z:\sorger\data\IN_Cell_Analyzer_6000\Giorgio\2019-01-03_Mouse_Lung_Tumors_Round2\Analysis\ANALYSIS\FullStacks\' fold '_' Field(field).Name '.tif'];
+%                                 img2 = imread(img,1); %DAPI first cycle
+%                                 imshow(img2 ,[])
+%                                 hold on
+%                                 %plot(ROI_loc(:,1), ROI_loc(:,2), 'b.')
+%                                 plot(Centroids(:,1), Centroids(:,2), 'b.')
+%                                 hold on
+%                                 %plot(ROI_loc(:,1), ROI_loc(:,2), 'y.')
+%                                 plot(Centroids(ROI_pixels(field).Index,1), Centroids(ROI_pixels(field).Index,2), 'y.')
+%                                 hold off
+                end
         end 
     end
     save(filename_res, 'ROI_pixels' , '-v7.3')
 end
+end
 end 
-%end 
