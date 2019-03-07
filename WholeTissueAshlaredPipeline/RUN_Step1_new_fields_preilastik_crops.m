@@ -46,7 +46,7 @@ for i = 1:length(filename.folders.fols)
             kf= 1;
             imwrite(field, outfilename)
         end
-        Coordinates.Field{1,column} = {fieldname, kf, ix, xcorr, 1, t}; %Saving coordinates
+        Coordinates.Field{1,column} = [ kf, ix, xcorr, 1, t]; %Saving coordinates
         
         ix = xcorr + 1; %Save previous corrdinate to intialize next field +1 cause start at next matrix
         column = column + 1; %column number
@@ -63,7 +63,7 @@ for i = 1:length(filename.folders.fols)
         kf= 1;
         imwrite(field, outfilename)
     end
-    Coordinates.Field{1,column} = {fieldname, kf, ix, xcorr, 1, t}; %Saving coordinates
+    Coordinates.Field{1,column} = [ kf, ix, xcorr, 1, t]; %Saving coordinates
     toc
     
     %Loops while first coordinate is less than y-t for columns
@@ -85,7 +85,7 @@ for i = 1:length(filename.folders.fols)
             kf= 1; 
             imwrite(field, outfilename)
         end
-        Coordinates.Field{row,1} = {fieldname,kf, 1,t, iy, ycorr}; %Saving coordinates
+        Coordinates.Field{row,1} = [kf, 1,t, iy, ycorr]; %Saving coordinates
         iy = ycorr + 1; %Save previous corrdinate to intialize next field +1 cause start at next matrix
         row = row + 1; %column number
     end
@@ -101,7 +101,7 @@ for i = 1:length(filename.folders.fols)
             kf= 1;
             imwrite(field, outfilename)
     end 
-    Coordinates.Field{row,1} = {fieldname,kf, 1, t, iy, ycorr}; %Saving coordinates
+    Coordinates.Field{row,1} = [kf, 1, t, iy, ycorr]; %Saving coordinates
     toc
     % Loop through column and row to create all fields
     for j1 = 2:column
@@ -120,7 +120,7 @@ for i = 1:length(filename.folders.fols)
                 kf= 1;
                 imwrite(field, outfilename)
             end
-            Coordinates.Field{j2,j1} = {fieldname,kf, xcoord, ycoord}; %Saving coordinates
+            Coordinates.Field{j2,j1} = [kf, xcoord, ycoord]; %Saving coordinates
         end
     end
     toc
