@@ -12,7 +12,8 @@ for k = 1:length(filename.folders.fols)
     fold = filename.folders.fols{k};
     filename.folders.resultfile = [filename.folders.results fold '_Results_' options.date '.mat'];
     addpath(filename.folders.main)
-    mkdir([filename.folders.main filename.folders.output fold filesep filename.folders.fociseg]); 
+    mkdir([filename.folders.main filename.folders.output fold filesep filename.folders.fociseg]);
+    Field = []; 
     for i1 = 1:filename.prefix1
         for i2 = 1:filename.prefix2
             
